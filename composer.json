@@ -1,0 +1,21 @@
+{
+    "name": "anourvalar/laravel-atom",
+    "description": "Simple way to execute action after transaction closed (commit/finish)",
+    "keywords": ["laravel", "transaction", "anourvalar"],
+    "homepage": "https://github.com/AnourValar/laravel-atom",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0.0",
+        "laravel/framework": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-4": {"AnourValar\\LaravelAtom\\": "src/"}
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "LaravelAtom": "AnourValar\\LaravelAtom\\Facades\\LaravelAtomFacade"
+            }
+        }
+    }
+}
