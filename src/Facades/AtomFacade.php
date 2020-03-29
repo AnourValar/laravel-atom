@@ -4,13 +4,13 @@ namespace AnourValar\LaravelAtom\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class LaravelAtomFacade extends Facade
+class AtomFacade extends Facade
 {
     /**
      * @return string
      */
     protected static function getFacadeAccessor()
     {
-        return \AnourValar\LaravelAtom\TransactionService::class;
+        return \AnourValar\LaravelAtom\Service::class;
     }
 }

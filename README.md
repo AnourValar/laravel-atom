@@ -2,16 +2,27 @@
 
 ### Action after transaction commit
 ```php
-LaravelAtom::onCommit(function ()
+Atom::onCommit(function ()
 {
     dispatch(new Job());
 });
 ```
 
+
 ### Action after transaction rollback
 ```php
-LaravelAtom::onRollback(function ()
+Atom::onRollback(function ()
 {
     Storage::delete('file.jpg');
 });
+```
+
+
+### Pessimistic lock
+```php
+Atom::lock('user');
+```
+
+```php
+Atom::lockUser($user->id); // equal to: Atom::lock('user', $user->id);
 ```

@@ -1,7 +1,7 @@
 {
     "name": "anourvalar/laravel-atom",
-    "description": "Simple way to execute action after transaction closed (commit/finish)",
-    "keywords": ["laravel", "transaction", "anourvalar"],
+    "description": "ACID API",
+    "keywords": ["anourvalar", "laravel", "transaction", "lock", "lockForUpdate", "multithreading", "atomicity"],
     "homepage": "https://github.com/AnourValar/laravel-atom",
     "license": "MIT",
     "require": {
@@ -13,8 +13,11 @@
     },
     "extra": {
         "laravel": {
+            "providers": [
+                "AnourValar\\LaravelAtom\\Providers\\LaravelAtomServiceProvider"
+            ],
             "aliases": {
-                "LaravelAtom": "AnourValar\\LaravelAtom\\Facades\\LaravelAtomFacade"
+                "Atom": "AnourValar\\LaravelAtom\\Facades\\AtomFacade"
             }
         }
     }
