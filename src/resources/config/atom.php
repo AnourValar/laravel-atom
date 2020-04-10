@@ -9,6 +9,7 @@ return [
 
         'strategies' => [
             'pessimistic_transaction' => AnourValar\LaravelAtom\Strategies\PessimisticTransactionStrategy::class,
+            'optimistic_transaction' => AnourValar\LaravelAtom\Strategies\OptimisticTransactionStrategy::class,
         ],
     ],
 ];

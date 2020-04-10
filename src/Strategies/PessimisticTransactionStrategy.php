@@ -26,9 +26,9 @@ class PessimisticTransactionStrategy implements StrategyInterface
      * @param boolean $reTry
      * @throws \Exception
      */
-    private function apply(string $sha1, Connection $connection, string $table, bool $reTry = true) : void
+    protected function apply(string $sha1, Connection $connection, string $table, bool $reTry = true) : void
     {
-        $record = $connection->table($table)->lockForUpdate()->where('sha1', '=', $sha1)->first();
+        $record = $connection->table($table)->lock($this->getLock())->where('sha1', '=', $sha1)->first();
 
         if ($record) {
             $connection->table($table)->where('sha1', '=', $sha1)->update(['updated_at' => date('Y-m-d H:i:s')]);
@@ -49,5 +49,13 @@ class PessimisticTransactionStrategy implements StrategyInterface
         }
 
         $this->apply($sha1, $connection, $table, false);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getLock()
+    {
+        return true; // FOR UPDATE
     }
 }
