@@ -12,7 +12,6 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
      * {@inheritDoc}
      * @see \AnourValar\LaravelAtom\Strategies\PessimisticTransactionStrategy::lock()
      */
-
     public function lock(string $sha1, Connection $connection, string $table) : void
     {
         try {
