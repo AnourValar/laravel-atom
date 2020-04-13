@@ -1,3 +1,12 @@
+# Laravel ACID API
+
+## Installation
+
+```bash
+composer require anourvalar/laravel-atom
+```
+
+
 ## Usage
 
 ### Action after transaction commit
