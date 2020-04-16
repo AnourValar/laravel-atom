@@ -18,9 +18,9 @@ Atom::onCommit(function ()
 ```
 
 
-### Action after transaction rollback
+### Action after transaction rollBack
 ```php
-Atom::onRollback(function ()
+Atom::onRollBack(function ()
 {
     Storage::delete('file.jpg');
 });

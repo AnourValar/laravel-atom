@@ -104,13 +104,13 @@ class Service
     }
 
     /**
-     * Action after transaction rollback
+     * Action after transaction rollBack
      *
      * @param callable $closure
      * @param string $connection
      * @return void
      */
-    public function onRollback(callable $closure, string $connection = null) : void
+    public function onRollBack(callable $closure, string $connection = null) : void
     {
         if (\DB::connection($connection)->transactionLevel()) {
             \Event::listen(TransactionRolledBack::class, function () use ($closure, $connection)

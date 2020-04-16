@@ -46,9 +46,9 @@ class PessimisticTransactionStrategy implements StrategyInterface
             $connection->table($table)->insert(['sha1' => $sha1, 'updated_at' => date('Y-m-d H:i:s')]);
             $connection->commit();
         } catch (\Illuminate\Database\QueryException $e) {
-            $connection->rollback();
+            $connection->rollBack();
         } catch (\Throwable $e) {
-            $connection->rollback();
+            $connection->rollBack();
 
             throw $e;
         }
