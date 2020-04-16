@@ -40,12 +40,17 @@ class PessimisticTransactionStrategy implements StrategyInterface
             throw new \Exception('Something went wrong.');
         }
 
+        $connection->beginTransaction();
+
         try {
-            $connection->beginTransaction();
             $connection->table($table)->insert(['sha1' => $sha1, 'updated_at' => date('Y-m-d H:i:s')]);
             $connection->commit();
         } catch (\Illuminate\Database\QueryException $e) {
             $connection->rollback();
+        } catch (\Throwable $e) {
+            $connection->rollback();
+
+            throw $e;
         }
 
         $this->apply($sha1, $connection, $table, false);
