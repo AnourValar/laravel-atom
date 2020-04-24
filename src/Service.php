@@ -82,25 +82,30 @@ class Service
      */
     public function onCommit(callable $closure, string $connection = null) : void
     {
-        if (\DB::connection($connection)->transactionLevel()) {
-            \Event::listen(TransactionCommitted::class, function () use ($closure, $connection)
-            {
-                if (! \DB::connection($connection)->transactionLevel()) {
-                    \Event::forget(TransactionCommitted::class);
+        if (is_null($connection)) {
+            $connection = \DB::getDefaultConnection();
+        }
+
+        if (! \DB::connection($connection)->transactionLevel()) {
+            $closure();
+            return;
+        }
+
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) use ($closure, $connection)
+        {
+            static $triggered;
+
+            if ($triggered || $event->connectionName !== $connection) {
+                return;
+            }
+
+            if (! \DB::connection($connection)->transactionLevel()) {
+                $triggered = true;
+                if ($event instanceof TransactionCommitted) {
                     $closure();
                 }
-            });
-
-            \Event::listen(TransactionRolledBack::class, function () use ($closure, $connection)
-            {
-                if (! \DB::connection($connection)->transactionLevel()) {
-                    \Event::forget(TransactionCommitted::class);
-                    \Event::forget(TransactionRolledBack::class);
-                }
-            });
-        } else {
-            $closure();
-        }
+            }
+        });
     }
 
     /**
@@ -112,15 +117,29 @@ class Service
      */
     public function onRollBack(callable $closure, string $connection = null) : void
     {
-        if (\DB::connection($connection)->transactionLevel()) {
-            \Event::listen(TransactionRolledBack::class, function () use ($closure, $connection)
-            {
-                if (! \DB::connection($connection)->transactionLevel()) {
-                    \Event::forget(TransactionRolledBack::class);
+        if (is_null($connection)) {
+            $connection = \DB::getDefaultConnection();
+        }
+
+        if (! \DB::connection($connection)->transactionLevel()) {
+            return;
+        }
+
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) use ($closure, $connection)
+        {
+            static $triggered;
+
+            if ($triggered || $event->connectionName !== $connection) {
+                return;
+            }
+
+            if (! \DB::connection($connection)->transactionLevel()) {
+                $triggered = true;
+                if ($event instanceof TransactionRolledBack) {
                     $closure();
                 }
-            });
-        }
+            }
+        });
     }
 
     /**

@@ -13,7 +13,7 @@ class PessimisticTransactionStrategy implements StrategyInterface
     public function lock(string $sha1, Connection $connection, string $table) : void
     {
         if (! $connection->transactionLevel()) {
-            throw new \Exception('Lock can be applied only inside transaction');
+            throw new \LogicException('Lock can be applied only inside transaction');
         }
 
         $this->apply($sha1, $connection, $table);
@@ -25,6 +25,7 @@ class PessimisticTransactionStrategy implements StrategyInterface
      * @param string $table
      * @param boolean $reTry
      * @throws \Exception
+     * @return void
      */
     protected function apply(string $sha1, Connection $connection, string $table, bool $reTry = true) : void
     {
