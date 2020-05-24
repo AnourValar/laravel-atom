@@ -86,7 +86,7 @@ class Service
             $connection = \DB::getDefaultConnection();
         }
 
-        if (! \DB::connection($connection)->transactionLevel()) {
+        if ($this->shouldCommit($connection)) {
             $closure();
             return;
         }
@@ -99,7 +99,7 @@ class Service
                 return;
             }
 
-            if (! \DB::connection($connection)->transactionLevel()) {
+            if ($this->shouldCommit($connection)) {
                 $triggered = true;
                 if ($event instanceof TransactionCommitted) {
                     $closure();
@@ -121,7 +121,7 @@ class Service
             $connection = \DB::getDefaultConnection();
         }
 
-        if (! \DB::connection($connection)->transactionLevel()) {
+        if ($this->shouldRollBack($connection)) {
             return;
         }
 
@@ -133,7 +133,7 @@ class Service
                 return;
             }
 
-            if (! \DB::connection($connection)->transactionLevel()) {
+            if ($this->shouldRollBack($connection)) {
                 $triggered = true;
                 if ($event instanceof TransactionRolledBack) {
                     $closure();
@@ -185,5 +185,23 @@ class Service
                 ->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime('-1 day')))
                 ->delete();
         }
+    }
+
+    /**
+     * @param mixed $connection
+     * @return boolean
+     */
+    protected function shouldCommit($connection)
+    {
+         return (! \DB::connection($connection)->transactionLevel());
+    }
+
+    /**
+     * @param mixed $connection
+     * @return boolean
+     */
+    protected function shouldRollBack($connection)
+    {
+         return (! \DB::connection($connection)->transactionLevel());
     }
 }
