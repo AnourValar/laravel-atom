@@ -82,6 +82,8 @@ class Service
      */
     public function onCommit(callable $closure, string $connection = null) : void
     {
+        static $booted;
+
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
         }
@@ -91,18 +93,25 @@ class Service
             return;
         }
 
-        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) use ($closure, $connection)
-        {
-            static $triggered;
+        Registry::push('commit', $connection, $closure);
 
-            if ($triggered || $event->connectionName !== $connection) {
+        if ($booted) {
+            return;
+        }
+        $booted = true;
+
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event)
+        {
+            $connection = $event->connectionName;
+
+            if (! $this->shouldCommit($connection)) {
                 return;
             }
 
-            if ($this->shouldCommit($connection)) {
-                $triggered = true;
-                if ($event instanceof TransactionCommitted) {
-                    $closure();
+            $list = Registry::pull('commit', $connection);
+            if ($event instanceof TransactionCommitted) {
+                foreach ($list as $task) {
+                    $task();
                 }
             }
         });
@@ -117,6 +126,8 @@ class Service
      */
     public function onRollBack(callable $closure, string $connection = null) : void
     {
+        static $booted;
+
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
         }
@@ -125,18 +136,25 @@ class Service
             return;
         }
 
-        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) use ($closure, $connection)
-        {
-            static $triggered;
+        Registry::push('rollBack', $connection, $closure);
 
-            if ($triggered || $event->connectionName !== $connection) {
+        if ($booted) {
+            return;
+        }
+        $booted = true;
+
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event)
+        {
+            $connection = $event->connectionName;
+
+            if (! $this->shouldRollBack($connection)) {
                 return;
             }
 
-            if ($this->shouldRollBack($connection)) {
-                $triggered = true;
-                if ($event instanceof TransactionRolledBack) {
-                    $closure();
+            $list = Registry::pull('rollBack', $connection);
+            if ($event instanceof TransactionRolledBack) {
+                foreach ($list as $task) {
+                    $task();
                 }
             }
         });
