@@ -33,7 +33,7 @@ class Service
      * @param string $strategy
      * @return self
      */
-    public function strategy(string $strategy) : self
+    public function strategy(string $strategy): self
     {
         return new self(array_replace_recursive($this->config, ['locks' => ['strategy' => $strategy]]));
     }
@@ -61,7 +61,7 @@ class Service
      * @param ...$args
      * @return void
      */
-    public function lock() : void
+    public function lock(): void
     {
         $sha1 = sha1('/' . $this->canonizeArgs(func_get_args()) . '/');
         $connection = \DB::connection($this->config['locks']['connection']);
@@ -80,7 +80,7 @@ class Service
      * @param string $connection
      * @return void
      */
-    public function onCommit(callable $closure, string $connection = null) : void
+    public function onCommit(callable $closure, string $connection = null): void
     {
         static $booted;
 
@@ -124,7 +124,7 @@ class Service
      * @param string $connection
      * @return void
      */
-    public function onRollBack(callable $closure, string $connection = null) : void
+    public function onRollBack(callable $closure, string $connection = null): void
     {
         static $booted;
 
@@ -195,7 +195,7 @@ class Service
      * @param string $table
      * @return  void
      */
-    protected function cleanUp(\Illuminate\Database\Connection $connection, string $table) : void
+    protected function cleanUp(\Illuminate\Database\Connection $connection, string $table): void
     {
         if (! mt_rand(0, 10)) {
             $connection

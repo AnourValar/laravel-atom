@@ -15,5 +15,5 @@ interface StrategyInterface
      * @throws \Exception
      * @return void
      */
-    public function lock(string $sha1, Connection $connection, string $table) : void;
+    public function lock(string $sha1, Connection $connection, string $table): void;
 }

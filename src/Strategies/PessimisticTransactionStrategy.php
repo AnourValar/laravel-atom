@@ -10,7 +10,7 @@ class PessimisticTransactionStrategy implements StrategyInterface
      * {@inheritDoc}
      * @see \AnourValar\LaravelAtom\Strategies\StrategyInterface::lock()
      */
-    public function lock(string $sha1, Connection $connection, string $table) : void
+    public function lock(string $sha1, Connection $connection, string $table): void
     {
         if (! $connection->transactionLevel()) {
             throw new \LogicException('Lock can be applied only inside transaction');
@@ -27,7 +27,7 @@ class PessimisticTransactionStrategy implements StrategyInterface
      * @throws \Exception
      * @return void
      */
-    protected function apply(string $sha1, Connection $connection, string $table, bool $reTry = true) : void
+    protected function apply(string $sha1, Connection $connection, string $table, bool $reTry = true): void
     {
         $record = $connection->table($table)->lock($this->getLock())->where('sha1', '=', $sha1)->first();
 

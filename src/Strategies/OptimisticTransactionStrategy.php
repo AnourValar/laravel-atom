@@ -12,7 +12,7 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
      * {@inheritDoc}
      * @see \AnourValar\LaravelAtom\Strategies\PessimisticTransactionStrategy::lock()
      */
-    public function lock(string $sha1, Connection $connection, string $table) : void
+    public function lock(string $sha1, Connection $connection, string $table): void
     {
         try {
             parent::lock($sha1, $connection, $table);
@@ -50,7 +50,7 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
      * @param string $message
      * @return boolean
      */
-    private function isLockException(string $message) : bool
+    private function isLockException(string $message): bool
     {
         if (strpos($message, 'NOWAIT is set')) {
             return true;

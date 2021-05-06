@@ -23,7 +23,7 @@ class Registry
      * @param callable $closure
      * @return void
      */
-    public static function push(string $event, string $connectionName, callable $closure) : void
+    public static function push(string $event, string $connectionName, callable $closure): void
     {
         self::$tasks[$event][$connectionName][] = $closure;
     }
@@ -33,7 +33,7 @@ class Registry
      * @param string $connectionName
      * @return array
      */
-    public static function pull(string $event, string $connectionName) : array
+    public static function pull(string $event, string $connectionName): array
     {
         $list = ( self::$tasks[$event][$connectionName] ?? [] );
         unset(self::$tasks[$event][$connectionName]);
