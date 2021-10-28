@@ -13,6 +13,11 @@ class Service
     protected $config;
 
     /**
+     * @var integer
+     */
+    protected $transactionZeroLevel = 0;
+
+    /**
      * Setters
      *
      * @param array $config
@@ -25,6 +30,17 @@ class Service
         }
 
         $this->config = $config;
+    }
+
+    /**
+     * Set "zero level" for transactions
+     *
+     * @param integer $level
+     * @return void
+     */
+    public function transactionZeroLevel(int $level): void
+    {
+        $this->transactionZeroLevel = $level;
     }
 
     /**
@@ -211,7 +227,7 @@ class Service
      */
     protected function shouldCommit($connection)
     {
-         return (! \DB::connection($connection)->transactionLevel());
+         return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
     }
 
     /**
@@ -220,6 +236,6 @@ class Service
      */
     protected function shouldRollBack($connection)
     {
-         return (! \DB::connection($connection)->transactionLevel());
+         return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
     }
 }

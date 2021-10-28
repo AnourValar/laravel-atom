@@ -7,6 +7,16 @@ use Illuminate\Support\ServiceProvider;
 class LaravelAtomServiceProvider extends ServiceProvider
 {
     /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+
+    }
+
+    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -19,15 +29,5 @@ class LaravelAtomServiceProvider extends ServiceProvider
 
         // migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-
     }
 }
