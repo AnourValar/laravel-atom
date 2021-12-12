@@ -23,7 +23,7 @@ class PessimisticTransactionStrategy implements StrategyInterface
      * @param string $sha1
      * @param \Illuminate\Database\Connection $connection
      * @param string $table
-     * @param boolean $reTry
+     * @param bool $reTry
      * @throws \Exception
      * @return void
      */

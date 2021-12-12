@@ -7,15 +7,7 @@ class Registry
     /**
      * @var array
      */
-    private static $tasks;
-
-    /**
-     * Singleton
-     */
-    private function __construct()
-    {
-        //
-    }
+    private $tasks;
 
     /**
      * @param string $event
@@ -23,9 +15,9 @@ class Registry
      * @param callable $closure
      * @return void
      */
-    public static function push(string $event, string $connectionName, callable $closure): void
+    public function push(string $event, string $connectionName, callable $closure): void
     {
-        self::$tasks[$event][$connectionName][] = $closure;
+        $this->tasks[$event][$connectionName][] = $closure;
     }
 
     /**
@@ -33,11 +25,15 @@ class Registry
      * @param string $connectionName
      * @return array
      */
-    public static function pull(string $event, string $connectionName): array
+    public function pull(string $event, string $connectionName): array
     {
-        $list = ( self::$tasks[$event][$connectionName] ?? [] );
-        unset(self::$tasks[$event][$connectionName]);
+        if (isset($this->tasks[$event][$connectionName])) {
+            $tasks = $this->tasks[$event][$connectionName];
+            unset($this->tasks[$event][$connectionName]);
 
-        return $list;
+            return $tasks;
+        }
+
+        return [];
     }
 }

@@ -13,7 +13,10 @@ class LaravelAtomServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->app->singleton(\AnourValar\LaravelAtom\Service::class, function ($app)
+        {
+            return new \AnourValar\LaravelAtom\Service(new \AnourValar\LaravelAtom\Registry());
+        });
     }
 
     /**

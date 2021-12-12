@@ -13,29 +13,41 @@ class Service
     protected $config;
 
     /**
-     * @var integer
+     * @var \AnourValar\LaravelAtom\Registry
+     */
+    protected $registry;
+
+    /**
+     * @var array
+     */
+    protected $booted = ['commit' => false, 'rollback' => false];
+
+    /**
+     * @var int
      */
     protected $transactionZeroLevel = 0;
 
     /**
      * Setters
      *
+     * @param \AnourValar\LaravelAtom\Registry $registry
      * @param array $config
      * @return  void
      */
-    public function __construct(array $config = null)
+    public function __construct(\AnourValar\LaravelAtom\Registry $registry, array $config = null)
     {
+        $this->registry = $registry;
+
         if (is_null($config)) {
             $config = config('atom');
         }
-
         $this->config = $config;
     }
 
     /**
      * Set "zero level" for transactions
      *
-     * @param integer $level
+     * @param int $level
      * @return void
      */
     public function transactionZeroLevel(int $level): void
@@ -98,8 +110,6 @@ class Service
      */
     public function onCommit(callable $closure, string $connection = null): void
     {
-        static $booted;
-
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
         }
@@ -109,12 +119,12 @@ class Service
             return;
         }
 
-        Registry::push('commit', $connection, $closure);
+        $this->registry->push('commit', $connection, $closure);
 
-        if ($booted) {
+        if ($this->booted['commit']) {
             return;
         }
-        $booted = true;
+        $this->booted['commit'] = true;
 
         \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event)
         {
@@ -124,7 +134,7 @@ class Service
                 return;
             }
 
-            $list = Registry::pull('commit', $connection);
+            $list = $this->registry->pull('commit', $connection);
             if ($event instanceof TransactionCommitted) {
                 foreach ($list as $task) {
                     $task();
@@ -142,8 +152,6 @@ class Service
      */
     public function onRollBack(callable $closure, string $connection = null): void
     {
-        static $booted;
-
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
         }
@@ -152,12 +160,12 @@ class Service
             return;
         }
 
-        Registry::push('rollBack', $connection, $closure);
+        $this->registry->push('rollback', $connection, $closure);
 
-        if ($booted) {
+        if ($this->booted['rollback']) {
             return;
         }
-        $booted = true;
+        $this->booted['rollback'] = true;
 
         \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event)
         {
@@ -167,7 +175,7 @@ class Service
                 return;
             }
 
-            $list = Registry::pull('rollBack', $connection);
+            $list = $this->registry->pull('rollback', $connection);
             if ($event instanceof TransactionRolledBack) {
                 foreach ($list as $task) {
                     $task();
@@ -223,7 +231,7 @@ class Service
 
     /**
      * @param mixed $connection
-     * @return boolean
+     * @return bool
      */
     protected function shouldCommit($connection)
     {
@@ -232,7 +240,7 @@ class Service
 
     /**
      * @param mixed $connection
-     * @return boolean
+     * @return bool
      */
     protected function shouldRollBack($connection)
     {

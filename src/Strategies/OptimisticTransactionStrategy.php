@@ -48,7 +48,7 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
 
     /**
      * @param string $message
-     * @return boolean
+     * @return bool
      */
     private function isLockException(string $message): bool
     {
