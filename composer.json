@@ -5,8 +5,8 @@
     "homepage": "https://github.com/AnourValar/laravel-atom",
     "license": "MIT",
     "require": {
-        "php": ">=7.1.0",
-        "laravel/framework": ">=5.5.0"
+        "php": ">=8.0",
+        "laravel/framework": ">=8.37"
     },
     "autoload": {
         "psr-4": {"AnourValar\\LaravelAtom\\": "src/"}
