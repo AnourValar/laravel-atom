@@ -30,6 +30,10 @@ class LaravelAtomServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../resources/config/atom.php', 'atom');
         $this->publishes([ __DIR__.'/../resources/config/atom.php' => config_path('atom.php')], 'config');
 
+        // langs
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravel-atom');
+        $this->publishes([__DIR__.'/../resources/lang/' => lang_path('vendor/laravel-atom')]);
+
         // migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }

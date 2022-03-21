@@ -106,9 +106,9 @@ class Service
      *
      * @param callable $closure
      * @param string $connection
-     * @return void
+     * @return int|null
      */
-    public function onCommit(callable $closure, string $connection = null): void
+    public function onCommit(callable $closure, string $connection = null): ?int
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
@@ -116,13 +116,13 @@ class Service
 
         if ($this->shouldCommit($connection)) {
             $closure();
-            return;
+            return null;
         }
 
-        $this->registry->push('commit', $connection, $closure);
+        $key = $this->registry->push('commit', $connection, $closure);
 
         if ($this->booted['commit']) {
-            return;
+            return $key;
         }
         $this->booted['commit'] = true;
 
@@ -141,6 +141,8 @@ class Service
                 }
             }
         });
+
+        return $key;
     }
 
     /**
@@ -148,22 +150,22 @@ class Service
      *
      * @param callable $closure
      * @param string $connection
-     * @return void
+     * @return int|null
      */
-    public function onRollBack(callable $closure, string $connection = null): void
+    public function onRollBack(callable $closure, string $connection = null): ?int
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
         }
 
         if ($this->shouldRollBack($connection)) {
-            return;
+            return null;
         }
 
-        $this->registry->push('rollback', $connection, $closure);
+        $key = $this->registry->push('rollback', $connection, $closure);
 
         if ($this->booted['rollback']) {
-            return;
+            return $key;
         }
         $this->booted['rollback'] = true;
 
@@ -182,6 +184,40 @@ class Service
                 }
             }
         });
+
+        return $key;
+    }
+
+    /**
+     * Remove "onCommit" task
+     *
+     * @param int $key
+     * @param string $connection
+     * @return void
+     */
+    public function removeOnCommit(int $key, string $connection = null): void
+    {
+        if (is_null($connection)) {
+            $connection = \DB::getDefaultConnection();
+        }
+
+        $this->registry->remove('commit', $connection, $key);
+    }
+
+    /**
+     * Remove "onRollBack" task
+     *
+     * @param int $key
+     * @param string $connection
+     * @return void
+     */
+    public function removeOnRollBack(int $key, string $connection = null): void
+    {
+        if (is_null($connection)) {
+            $connection = \DB::getDefaultConnection();
+        }
+
+        $this->registry->remove('rollback', $connection, $key);
     }
 
     /**

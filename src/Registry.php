@@ -13,11 +13,24 @@ class Registry
      * @param string $event
      * @param string $connectionName
      * @param callable $closure
-     * @return void
+     * @return int
      */
-    public function push(string $event, string $connectionName, callable $closure): void
+    public function push(string $event, string $connectionName, callable $closure): int
     {
         $this->tasks[$event][$connectionName][] = $closure;
+
+        return array_key_last($this->tasks[$event][$connectionName]);
+    }
+
+    /**
+     * @param string $event
+     * @param string $connectionName
+     * @param int $key
+     * @return void
+     */
+    public function remove(string $event, string $connectionName, int $key): void
+    {
+        unset($this->tasks[$event][$connectionName][$key]);
     }
 
     /**
