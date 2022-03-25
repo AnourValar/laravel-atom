@@ -149,22 +149,6 @@ class ArrayHelper
     }
 
     /**
-     * Gets array's element by its path (key.subkey)
-     *
-     * @param array $array
-     * @param string $path
-     * @return mixed
-     */
-    public function extractByPath(array $array, string $path)
-    {
-        foreach (explode('.', $path) as $part) {
-            $array = ( $array[$part] ?? null );
-        }
-
-        return $array;
-    }
-
-    /**
      * Recursively merges arrays with replaces for scalar values
      *
      * @param array $array1
