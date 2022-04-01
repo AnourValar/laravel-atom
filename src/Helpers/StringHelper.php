@@ -31,7 +31,7 @@ class StringHelper
      */
     public function formatPhone(?string $phone): ?string
     {
-        if (is_null($phone)) {
+        if (! $phone) {
             return $phone;
         }
 
