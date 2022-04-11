@@ -10,14 +10,21 @@ class ArrayAccessMapper implements \ArrayAccess
     private $data;
 
     /**
+     * @var bool
+     */
+    private $instanceInsteadOfNull;
+
+    /**
      * Setter
      *
      * @param array $data
+     * @param bool $instanceInsteadOfNull
      * @return void
      */
-    public function __construct(array $data)
+    public function __construct(array $data, bool $instanceInsteadOfNull = false)
     {
         $this->data = $data;
+        $this->instanceInsteadOfNull = $instanceInsteadOfNull;
     }
 
     /**
@@ -38,6 +45,38 @@ class ArrayAccessMapper implements \ArrayAccess
     public function __toString()
     {
         return '';
+    }
+
+    /**
+     * Check if at least one key exists (not null)
+     *
+     * @return bool
+     */
+    public function has()
+    {
+        foreach (func_get_args() as $arg) {
+            if (isset($this->data[$arg])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if all keys exist (not null)
+     *
+     * @return bool
+     */
+    public function hasAll()
+    {
+        foreach (func_get_args() as $arg) {
+            if (! isset($this->data[$arg])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -86,6 +125,6 @@ class ArrayAccessMapper implements \ArrayAccess
      */
     public function offsetGet($offset): mixed
     {
-        return ( $this->data[$offset] ?? (new static([])) );
+        return ( $this->data[$offset] ?? ($this->instanceInsteadOfNull ? (new static([], true)) : null) );
     }
 }
