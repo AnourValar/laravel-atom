@@ -12,4 +12,9 @@ return [
             'optimistic_transaction' => AnourValar\LaravelAtom\Strategies\OptimisticTransactionStrategy::class,
         ],
     ],
+
+    'number' => [
+        'multiple' => 100,
+        'multiple_round' => 2,
+    ],
 ];
