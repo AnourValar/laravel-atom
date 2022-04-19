@@ -7,16 +7,16 @@ class NumberHelper
     /**
      * Canonize
      *
-     * @param int|float|string|null $amount
+     * @param int|float|null $amount
      * @return int|null
      */
-    public function encodeMultiple(int|float|string|null $amount): ?int
+    public function encodeMultiple(int|float|null $amount): ?int
     {
         if (is_null($amount)) {
             return null;
         }
 
-        return round( round($amount, config('atom.number.multiple_round')) * config('atom.number.multiple') );
+        return round($amount * config('atom.number.multiple'));
     }
 
     /**
@@ -31,6 +31,7 @@ class NumberHelper
             return null;
         }
 
-        return round($amount / config('atom.number.multiple'), config('atom.number.multiple_round'));
+        $multiple = config('atom.number.multiple');
+        return round($amount / $multiple, (mb_strlen($multiple) - 1));
     }
 }

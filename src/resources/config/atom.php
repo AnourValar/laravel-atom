@@ -15,6 +15,5 @@ return [
 
     'number' => [
         'multiple' => 100,
-        'multiple_round' => 2,
     ],
 ];
