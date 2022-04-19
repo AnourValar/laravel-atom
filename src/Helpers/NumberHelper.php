@@ -16,7 +16,7 @@ class NumberHelper
             return null;
         }
 
-        return round($amount, config('atom.number.multiple_round')) * config('atom.number.multiple');
+        return round( round($amount, config('atom.number.multiple_round')) * config('atom.number.multiple') );
     }
 
     /**
