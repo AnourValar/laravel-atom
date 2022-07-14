@@ -8,14 +8,19 @@ use Illuminate\Database\Events\TransactionRolledBack;
 class Service
 {
     /**
+     * @var \AnourValar\LaravelAtom\Registry
+     */
+    protected $registry;
+
+    /**
      * @var array
      */
     protected $config;
 
     /**
-     * @var \AnourValar\LaravelAtom\Registry
+     * @var callable
      */
-    protected $registry;
+    protected $lockHook;
 
     /**
      * @var array
@@ -32,9 +37,10 @@ class Service
      *
      * @param \AnourValar\LaravelAtom\Registry $registry
      * @param array $config
+     * @param callable $lockHook
      * @return  void
      */
-    public function __construct(\AnourValar\LaravelAtom\Registry $registry, array $config = null)
+    public function __construct(\AnourValar\LaravelAtom\Registry $registry, array $config = null, callable $lockHook = null)
     {
         $this->registry = $registry;
 
@@ -42,6 +48,8 @@ class Service
             $config = config('atom');
         }
         $this->config = $config;
+
+        $this->lockHook = $lockHook;
     }
 
     /**
@@ -98,6 +106,9 @@ class Service
         $class = $this->config['locks']['strategies'][$this->config['locks']['strategy']];
         (new $class)->lock($sha1, $connection, $table);
 
+        if ($this->lockHook) {
+            ($this->lockHook)($sha1, func_get_args());
+        }
         $this->cleanUp($connection, $table);
     }
 
