@@ -38,9 +38,9 @@ class Service
      * @param \AnourValar\LaravelAtom\Registry $registry
      * @param array $config
      * @param callable $lockHook
-     * @return  void
+     * @return void
      */
-    public function __construct(\AnourValar\LaravelAtom\Registry $registry, array $config = null, callable $lockHook = null)
+    public function __construct(Registry $registry, array $config = null, callable $lockHook = null)
     {
         $this->registry = $registry;
 
@@ -71,7 +71,11 @@ class Service
      */
     public function strategy(string $strategy): self
     {
-        return new self(array_replace_recursive($this->config, ['locks' => ['strategy' => $strategy]]));
+        return new self(
+            new Registry(),
+            array_replace_recursive($this->config, ['locks' => ['strategy' => $strategy]]),
+            $this->lockHook
+        );
     }
 
     /**
@@ -137,8 +141,7 @@ class Service
         }
         $this->booted['commit'] = true;
 
-        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event)
-        {
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) {
             $connection = $event->connectionName;
 
             if (! $this->shouldCommit($connection)) {
@@ -180,8 +183,7 @@ class Service
         }
         $this->booted['rollback'] = true;
 
-        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event)
-        {
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) {
             $connection = $event->connectionName;
 
             if (! $this->shouldRollBack($connection)) {

@@ -21,7 +21,7 @@ class ClientRestrict
     {
         $apiRestrict = $request->headers->get($this->header);
 
-        if ($apiRestrict && !in_array($apiRestrict, $supportedClients)) {
+        if ($apiRestrict && ! in_array($apiRestrict, $supportedClients)) {
             throw new \AnourValar\LaravelAtom\Exceptions\UnsupportedClientException();
         }
 

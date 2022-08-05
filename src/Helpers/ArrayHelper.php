@@ -11,7 +11,7 @@ class ArrayHelper
      * @param bool $multiline
      * @return string
      */
-    function jsonPretty(array $value, bool $multiline = true): string
+    public function jsonPretty(array $value, bool $multiline = true): string
     {
         $result = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
@@ -39,7 +39,7 @@ class ArrayHelper
         $isFirst = true;
 
         foreach ($array as $key => $value) {
-            if ($result && !$isInline) {
+            if ($result && ! $isInline) {
                 $result .= "\n";
             }
 
@@ -53,12 +53,12 @@ class ArrayHelper
 
                 if ($sub) {
                     if (stripos($sub, "\n")) {
-                        $result .= "\n" . $sub . "\n" . str_pad('', $indentSize, ' ', STR_PAD_LEFT) . "],";
+                        $result .= "\n" . $sub . "\n" . str_pad('', $indentSize, ' ', STR_PAD_LEFT) . '],';
                     } else {
-                        $result .= trim(mb_substr($sub, 0, -1))."],";
+                        $result .= trim(mb_substr($sub, 0, -1)).'],';
                     }
                 } else {
-                    $result .= "],";
+                    $result .= '],';
                 }
 
             } else {
@@ -69,7 +69,7 @@ class ArrayHelper
                     $value = "'".addcslashes($value, "'")."'";
                 }
 
-                if (!$isInline || $isFirst) {
+                if (! $isInline || $isFirst) {
                     $result .= str_pad('', $indentSize, ' ', STR_PAD_LEFT);
                     $isFirst = false;
                 } else {
@@ -95,7 +95,7 @@ class ArrayHelper
      * @param array $value2
      * @param array $exceptions
      * @param array $path
-     * @return string|NULL
+     * @return string|null
      */
     public function getStructureDiff(array $value1, array $value2, array $exceptions, array $path = []): ?string
     {
@@ -133,7 +133,7 @@ class ArrayHelper
      * @param array $value1
      * @param array $value2
      * @param array $path
-     * @return string|NULL
+     * @return string|null
      */
     public function getTypeDiff(array $value1, array $value2, array $path = []): ?string
     {
@@ -142,15 +142,15 @@ class ArrayHelper
                 continue;
             }
 
-            if (is_array($value2[$key]) && !is_array($value1[$key])) {
+            if (is_array($value2[$key]) && ! is_array($value1[$key])) {
                 return implode('.', array_merge($path, [$key]));
             }
 
-            if (is_bool($value2[$key]) && !is_bool($value1[$key])) {
+            if (is_bool($value2[$key]) && ! is_bool($value1[$key])) {
                 return implode('.', array_merge($path, [$key]));
             }
 
-            if (is_numeric($value2[$key]) && !is_numeric($value1[$key])) {
+            if (is_numeric($value2[$key]) && ! is_numeric($value1[$key])) {
                 return implode('.', array_merge($path, [$key]));
             }
 
@@ -204,7 +204,7 @@ class ArrayHelper
      * @param array $attributes
      * @return mixed
      */
-    function publishCollection(object $data, array $attributes): mixed
+    public function publishCollection(object $data, array $attributes): mixed
     {
         $appends = null;
         $relations = null;
@@ -274,7 +274,7 @@ class ArrayHelper
 
     /**
      * @param array $array
-     * @return boolean
+     * @return bool
      */
     private function shouldBeInline(array $array): bool
     {

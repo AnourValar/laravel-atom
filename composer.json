@@ -8,6 +8,11 @@
         "php": ">=8.0",
         "laravel/framework": ">=8.37"
     },
+    "require-dev": {
+        "nunomaduro/larastan": "^1.0",
+        "laravel/pint": "^1.0",
+        "orchestra/testbench": "^7.6"
+    },
     "autoload": {
         "psr-4": {"AnourValar\\LaravelAtom\\": "src/"}
     },

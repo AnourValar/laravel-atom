@@ -41,13 +41,13 @@ class Select2
      * @param \Illuminate\Http\Request $request
      * @return void
      */
-    private function convertResponse(\Symfony\Component\HttpFoundation\Response &$response, Request $request) : void
+    private function convertResponse(\Symfony\Component\HttpFoundation\Response &$response, Request $request): void
     {
         $content = $response->getOriginalContent();
 
-        if (!$content instanceof \Illuminate\Pagination\LengthAwarePaginator
-            && !$content instanceof \Illuminate\Pagination\CursorPaginator
-            && !$content instanceof \Illuminate\Pagination\Paginator
+        if (! $content instanceof \Illuminate\Pagination\LengthAwarePaginator
+            && ! $content instanceof \Illuminate\Pagination\CursorPaginator
+            && ! $content instanceof \Illuminate\Pagination\Paginator
         ) {
             throw new \LogicException('Response type is not supported.');
         }

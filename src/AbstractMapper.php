@@ -21,7 +21,7 @@ abstract class AbstractMapper implements \JsonSerializable
     public function __construct(array $attributes)
     {
         foreach ($this->getScheme() as $attribute => $cast) {
-            if (!isset($attributes[$attribute]) && stripos((string) $cast, '?') === 0) {
+            if (! isset($attributes[$attribute]) && stripos((string) $cast, '?') === 0) {
                 $attributes[$attribute] = null;
             }
 
@@ -52,7 +52,7 @@ abstract class AbstractMapper implements \JsonSerializable
         }
 
         if (count($attributes)) {
-            throw new \LogicException("Invalid attributes: ".implode(', ', array_keys($attributes)));
+            throw new \LogicException('Invalid attributes: '.implode(', ', array_keys($attributes)));
         }
     }
 
@@ -78,8 +78,7 @@ abstract class AbstractMapper implements \JsonSerializable
 
         return array_filter(
             $this->attributes,
-            function ($key) use ($keys)
-            {
+            function ($key) use ($keys) {
                 return in_array($key, $keys);
             },
             ARRAY_FILTER_USE_KEY

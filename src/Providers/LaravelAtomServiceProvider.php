@@ -16,8 +16,7 @@ class LaravelAtomServiceProvider extends ServiceProvider
         // config
         $this->mergeConfigFrom(__DIR__.'/../resources/config/atom.php', 'atom');
 
-        $this->app->singleton(\AnourValar\LaravelAtom\Service::class, function ($app)
-        {
+        $this->app->singleton(\AnourValar\LaravelAtom\Service::class, function ($app) {
             return new \AnourValar\LaravelAtom\Service(new \AnourValar\LaravelAtom\Registry());
         });
     }

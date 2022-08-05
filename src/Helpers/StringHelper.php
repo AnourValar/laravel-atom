@@ -27,7 +27,7 @@ class StringHelper
      * Formatting (for display): phone number
      *
      * @param string $phone
-     * @return string|NULL
+     * @return string|null
      */
     public function formatPhone(?string $phone): ?string
     {
@@ -58,7 +58,7 @@ class StringHelper
      *
      * @param array $tags
      * @param string $content
-     * @return string|NULL
+     * @return string|null
      */
     public function stripTags(array $tags, ?string $content): ?string
     {
