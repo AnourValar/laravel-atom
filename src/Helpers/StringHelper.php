@@ -13,7 +13,7 @@ class StringHelper
      */
     public function canonizePhone(?string $phone, bool $withPlus = false): string
     {
-        $phone = preg_replace('|[^\d]|u', '', $phone);
+        $phone = preg_replace('|[^\d]|u', '', (string) $phone);
         $phone = preg_replace('|^8([^5]\d{9})$|', '7$1', $phone);
 
         if ($withPlus) {

@@ -1,12 +1,12 @@
 {
     "name": "anourvalar/laravel-atom",
     "description": "ACID API",
-    "keywords": ["anourvalar", "laravel", "transaction", "lock", "lockForUpdate", "multithreading", "atomicity"],
+    "keywords": ["anourvalar", "laravel", "transaction", "lock", "lockForUpdate", "race-condition", "race", "condition", "atomicity", "atomic"],
     "homepage": "https://github.com/AnourValar/laravel-atom",
     "license": "MIT",
     "require": {
-        "php": ">=8.0",
-        "laravel/framework": ">=8.37"
+        "php": "^8.0",
+        "laravel/framework": "^8.0|^9.0"
     },
     "require-dev": {
         "nunomaduro/larastan": "^1.0",
