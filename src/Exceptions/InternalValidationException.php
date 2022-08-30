@@ -32,16 +32,16 @@ class InternalValidationException extends Exception
     {
         $context = ['errors' => $e->validator->errors()->all(), 'data' => $e->validator->getData()];
 
-        return (new self('Internal validation error.', $e->getCode(), $e))->setContext($context);
+        return (new static('Internal validation error: ' . $e->getMessage(), $e->getCode(), $e))->setContext($context);
     }
 
     /**
      * Set: Log Context
      *
      * @param array $context
-     * @return static
+     * @return self
      */
-    public function setContext(array $context)
+    public function setContext(array $context): self
     {
         $this->context = $context;
 

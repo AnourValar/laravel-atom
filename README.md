@@ -11,8 +11,7 @@ composer require anourvalar/laravel-atom
 
 ### Action after transaction commit
 ```php
-Atom::onCommit(function ()
-{
+Atom::onCommit(function () {
     dispatch(new Job());
 });
 ```
@@ -20,8 +19,7 @@ Atom::onCommit(function ()
 
 ### Action after transaction rollBack
 ```php
-Atom::onRollBack(function ()
-{
+Atom::onRollBack(function () {
     Storage::delete('file.jpg');
 });
 ```
@@ -33,7 +31,7 @@ Atom::lock('user');
 ```
 
 ```php
-Atom::lockUser($user->id); // equal to: Atom::lock('user', $user->id);
+Atom::lockUser($user->id); // equals to: Atom::lock('user', $user->id);
 ```
 
 
