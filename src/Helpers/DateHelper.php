@@ -36,6 +36,10 @@ class DateHelper
                 $date = $date->setTimeFrom($time);
             }
 
+            if ($time instanceof \Carbon\CarbonInterface) {
+                $date = $date->setTimeFrom($time->format('H:i:s'));
+            }
+
             $date = $date->setTimezone($timezoneClient);
         }
 
