@@ -14,7 +14,7 @@ class StringHelper
     public function canonizePhone(?string $phone, bool $withPlus = false): string
     {
         $phone = preg_replace('|[^\d]|u', '', (string) $phone);
-        $phone = preg_replace('|^8([^5]\d{9})$|', '7$1', $phone);
+        $phone = preg_replace('|^8([^5]\d{9})$|', '7$1', $phone); // internal alias
 
         if ($withPlus) {
             $phone = "+$phone";
@@ -54,22 +54,23 @@ class StringHelper
     }
 
     /**
-     * Cleans tags
+     * Generates code
      *
-     * @param array $tags
-     * @param string $content
-     * @return string|null
+     * @param int $length
+     * @return string
      */
-    public function stripTags(array $tags, ?string $content): ?string
+    public function generateCode(int $length): string
     {
-        if (is_null($content)) {
-            return $content;
+        $code = '';
+
+        while (mb_strlen($code) < $length) {
+            if (config('app.debug')) {
+                $code .= '0';
+            } else {
+                $code .= random_int(0, 9);
+            }
         }
 
-        foreach ($tags as $tag) {
-            $content = preg_replace('#<\/?'.preg_quote($tag).'(>|\s[^>]*>)#iu', '', $content);
-        }
-
-        return $content;
+        return $code;
     }
 }
