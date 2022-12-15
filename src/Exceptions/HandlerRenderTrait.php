@@ -3,6 +3,7 @@
 namespace AnourValar\LaravelAtom\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\JsonEncodingException;
 use Illuminate\Session\TokenMismatchException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -96,6 +97,15 @@ trait HandlerRenderTrait
         if ($e instanceof TokenMismatchException) {
             if ($request->expectsJson()) {
                 $response->setData(['message' => $e->getMessage(), 'errors' => []]);
+            }
+        }
+
+        // JsonEncodingException
+        if ($e instanceof JsonEncodingException) {
+            if ($request->expectsJson()) {
+                return response(['message' => 'Malformed UTF-8 characters, possibly incorrectly encoded.'], 400);
+            } else {
+                return response('Malformed UTF-8 characters, possibly incorrectly encoded.', 400);
             }
         }
 
