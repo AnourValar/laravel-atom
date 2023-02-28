@@ -57,14 +57,15 @@ class StringHelper
      * Generates code
      *
      * @param int $length
+     * @param bool $debug
      * @return string
      */
-    public function generateCode(int $length): string
+    public function generateCode(int $length, bool $debug = false): string
     {
         $code = '';
 
         while (mb_strlen($code) < $length) {
-            if (config('app.debug')) {
+            if (config('app.debug') || $debug) {
                 $code .= '0';
             } else {
                 $code .= random_int(0, 9);
@@ -73,4 +74,19 @@ class StringHelper
 
         return $code;
     }
+
+    /**
+     * Cleans tags and its innerhtml
+     *
+     * @param string|null $content
+     * @return string|null
+     */
+    /*public function stripTags(?string $content): ?string
+    {
+        if (is_null($content)) {
+            return $content;
+        }
+
+        return preg_replace('#<\/?[a-z\d]+(>|\s[^>]*>)#iu', '', $content);
+    }*/
 }

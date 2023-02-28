@@ -255,7 +255,7 @@ class ArrayHelper
         };
 
         if ($data instanceof \Illuminate\Database\Eloquent\Model) {
-            return $apply($data)->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            return $apply($data)->toJson(JSON_UNESCAPED_UNICODE);
         }
 
         return $data
@@ -269,7 +269,7 @@ class ArrayHelper
                     return $apply($item);
                 }
             })
-            ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            ->toJson(JSON_UNESCAPED_UNICODE);
     }
 
     /**
