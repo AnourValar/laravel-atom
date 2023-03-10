@@ -34,7 +34,7 @@ trait HandlerRenderTrait
             if ($request->expectsJson()) {
                 $response->setData(['message' => $e->getMessage(), 'errors' => ['error' => [$error]]]);
             } else {
-                return redirect()->back()->withErrors(['error' => $error]);
+                return redirect()->back()->withErrors(['error' => $error])->withInput();
             }
 
         }
