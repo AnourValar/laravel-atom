@@ -62,8 +62,6 @@ trait HandlerRenderTrait
 
             if ($request->expectsJson()) {
                 $response->setData(['message' => ($e->getMessage() ?: 'Method Not Allowed.'), 'errors' => []]);
-            } else {
-                //abort(404);
             }
 
         }
@@ -88,25 +86,31 @@ trait HandlerRenderTrait
 
         // HttpException => verified
         if ($e instanceof HttpException && $e->getMessage() == 'Your email address is not verified.') {
+
             if ($request->expectsJson()) {
                 $response->setData(['message' => $e->getMessage(), 'errors' => []]);
             }
+
         }
 
         // TokenMismatchException
         if ($e instanceof TokenMismatchException) {
+
             if ($request->expectsJson()) {
                 $response->setData(['message' => $e->getMessage(), 'errors' => []]);
             }
+
         }
 
         // JsonEncodingException
         if ($e instanceof JsonEncodingException) {
+
             if ($request->expectsJson()) {
                 return response(['message' => 'Malformed UTF-8 characters, possibly incorrectly encoded.'], 400);
             } else {
                 return response('Malformed UTF-8 characters, possibly incorrectly encoded.', 400);
             }
+
         }
 
 
