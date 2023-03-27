@@ -110,7 +110,7 @@ trait HandlerRenderTrait
 
         }
 
-        // JsonEncodingException
+        // JsonEncodingException, InvalidArgumentException
         if ($e instanceof JsonEncodingException || $e instanceof \InvalidArgumentException) {
 
             if ($request->expectsJson()) {
