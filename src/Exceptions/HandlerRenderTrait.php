@@ -43,7 +43,15 @@ trait HandlerRenderTrait
         if ($e instanceof NotFoundHttpException || $e instanceof ModelNotFoundException) {
 
             if ($request->expectsJson()) {
-                $response->setData(['message' => ($e->getMessage() ?: 'Not Found.'), 'errors' => []]);
+                $message = $e->getMessage();
+                if (stripos($message, 'No query results') !== false) {
+                    $message = 'No query results.';
+                }
+                if (! $message) {
+                    $message = 'Not Found.';
+                }
+
+                $response->setData(['message' => $message, 'errors' => []]);
             }
 
         }
@@ -70,7 +78,7 @@ trait HandlerRenderTrait
         if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
 
             if ($request->expectsJson()) {
-                $response->setData(['message' => 'This action is unauthorized.', 'errors' => ['error' => [trans($e->getMessage())]]]);
+                $response->setData(['message' => $e->getMessage(), 'errors' => ['error' => [trans($e->getMessage())]]]);
             }
 
         }
@@ -103,7 +111,7 @@ trait HandlerRenderTrait
         }
 
         // JsonEncodingException
-        if ($e instanceof JsonEncodingException) {
+        if ($e instanceof JsonEncodingException || $e instanceof \InvalidArgumentException) {
 
             if ($request->expectsJson()) {
                 return response(['message' => 'Malformed UTF-8 characters, possibly incorrectly encoded.'], 400);
