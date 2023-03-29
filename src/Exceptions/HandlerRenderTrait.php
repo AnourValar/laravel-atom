@@ -2,6 +2,7 @@
 
 namespace AnourValar\LaravelAtom\Exceptions;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use Illuminate\Session\TokenMismatchException;
@@ -110,8 +111,12 @@ trait HandlerRenderTrait
 
         }
 
-        // JsonEncodingException, InvalidArgumentException
-        if ($e instanceof JsonEncodingException || $e instanceof \InvalidArgumentException) {
+        // JsonEncodingException [on json columns], InvalidArgumentException [on json content-type], QueryException [etc]
+        if (
+            $e instanceof JsonEncodingException
+            || ($e instanceof \InvalidArgumentException && stripos($e->getMessage(), 'Malformed UTF-8 characters') !== false)
+            || ($e instanceof QueryException && stripos($e->getMessage(), 'invalid byte sequence for encoding "UTF8"') !== false)
+        ) {
 
             if ($request->expectsJson()) {
                 return response(['message' => 'Malformed UTF-8 characters, possibly incorrectly encoded.'], 400);

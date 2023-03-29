@@ -48,6 +48,7 @@ class Select2
         if (! $content instanceof \Illuminate\Pagination\LengthAwarePaginator
             && ! $content instanceof \Illuminate\Pagination\CursorPaginator
             && ! $content instanceof \Illuminate\Pagination\Paginator
+            && $response->isSuccessful()
         ) {
             throw new \LogicException('Response type is not supported.');
         }
