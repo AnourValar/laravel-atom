@@ -32,6 +32,51 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
     }
 
     /**
+     * @param string $sha1
+     * @param \Illuminate\Database\Connection $connection
+     * @param string $table
+     * @param bool $reTry
+     * @throws \Exception
+     * @return void
+     */
+    protected function apply(string $sha1, Connection $connection, string $table, bool $reTry = true): void
+    {
+        $connection->beginTransaction();
+
+        try {
+            $record = $connection->table($table)->lock($this->getLock())->where('sha1', '=', $sha1)->first();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $connection->rollBack();
+            throw $e;
+        }
+
+        if ($record) {
+            $connection->table($table)->where('sha1', '=', $sha1)->update(['updated_at' => date('Y-m-d H:i:s')]);
+
+            $connection->commit();
+            return;
+        }
+
+        if (! $reTry) {
+            $connection->rollBack();
+            throw new \Exception('Something went wrong.');
+        }
+
+        try {
+            $connection->table($table)->insert(['sha1' => $sha1, 'updated_at' => date('Y-m-d H:i:s')]);
+            $connection->commit();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $connection->rollBack();
+        } catch (\Throwable $e) {
+            $connection->rollBack();
+
+            throw $e;
+        }
+
+        $this->apply($sha1, $connection, $table, false);
+    }
+
+    /**
      * {@inheritDoc}
      * @see \AnourValar\LaravelAtom\Strategies\TransactionStrategy::getLock()
      */

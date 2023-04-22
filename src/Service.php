@@ -270,10 +270,10 @@ class Service
      */
     protected function cleanUp(\Illuminate\Database\Connection $connection, string $table): void
     {
-        if (! mt_rand(0, 10)) {
+        if (! mt_rand(0, 50)) {
             $connection
                 ->table($table)
-                ->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime('-1 day')))
+                ->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime('-5 days')))
                 ->delete();
         }
     }
