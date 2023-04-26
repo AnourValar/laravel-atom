@@ -142,4 +142,111 @@ class DateHelper
 
         return $this->formatDate($date, true, $timezoneClient, $default);
     }
+
+    /**
+     * Example: Wed
+     *
+     * @param \Carbon\CarbonInterface $date
+     * @param bool $ucFirst
+     * @return string|null
+     */
+    public function dayShort(?\Carbon\CarbonInterface $date, bool $ucFirst = false): ?string
+    {
+        if (! isset($date)) {
+            return null;
+        }
+
+        $result = $date->translatedFormat('D');
+
+        if ($ucFirst) {
+            return mb_strtoupper(mb_substr($result, 0, 1)) . mb_substr($result, 1);
+        }
+        return $result;
+    }
+
+    /**
+     * Example: Wednesday
+     *
+     * @param \Carbon\CarbonInterface $date
+     * @param bool $ucFirst
+     * @return string|null
+     */
+    public function dayFull(?\Carbon\CarbonInterface $date, bool $ucFirst = false): ?string
+    {
+        if (! isset($date)) {
+            return null;
+        }
+
+        $result = $date->translatedFormat('l');
+
+        if ($ucFirst) {
+            return mb_strtoupper(mb_substr($result, 0, 1)) . mb_substr($result, 1);
+        }
+        return $result;
+    }
+
+    /**
+     * Example: Apr
+     *
+     * @param \Carbon\CarbonInterface $date
+     * @param bool $ucFirst
+     * @return string|null
+     */
+    public function monthShort(?\Carbon\CarbonInterface $date, bool $ucFirst = false): ?string
+    {
+        if (! isset($date)) {
+            return null;
+        }
+
+        $result = $date->translatedFormat('M');
+
+        if ($ucFirst) {
+            return mb_strtoupper(mb_substr($result, 0, 1)) . mb_substr($result, 1);
+        }
+        return $result;
+    }
+
+    /**
+     * Example: April
+     *
+     * @param \Carbon\CarbonInterface $date
+     * @param bool $ucFirst
+     * @return string|null
+     */
+    public function monthFull(?\Carbon\CarbonInterface $date, bool $ucFirst = false): ?string
+    {
+        if (! isset($date)) {
+            return null;
+        }
+
+        $result = $date->translatedFormat('F');
+
+        if ($ucFirst) {
+            return mb_strtoupper(mb_substr($result, 0, 1)) . mb_substr($result, 1);
+        }
+        return $result;
+    }
+
+    /**
+     * Example: April
+     *
+     * @param \Carbon\CarbonInterface $date
+     * @param bool $ucFirst
+     * @return string|null
+     */
+    public function monthFullCase(?\Carbon\CarbonInterface $date, bool $ucFirst = false): ?string
+    {
+        if (! isset($date)) {
+            return null;
+        }
+
+        $formatter = new \IntlDateFormatter(\App::getLocale(), \IntlDateFormatter::FULL, \IntlDateFormatter::FULL);
+        $formatter->setPattern('MMMM');
+        $result = $formatter->format($date);
+
+        if ($ucFirst) {
+            return mb_strtoupper(mb_substr($result, 0, 1)) . mb_substr($result, 1);
+        }
+        return $result;
+    }
 }
