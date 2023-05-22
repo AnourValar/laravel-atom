@@ -236,6 +236,7 @@ class Service
     /**
      * @param mixed $value
      * @return mixed
+     * @throws \RuntimeException
      */
     protected function canonizeArgs($value)
     {
@@ -258,6 +259,10 @@ class Service
             unset($item);
 
             return implode('/', $value);
+        }
+
+        if ($value === null && ! \App::isProduction()) {
+            throw new \RuntimeException('Null lock.');
         }
 
         return 0;
