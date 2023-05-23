@@ -2,9 +2,7 @@
 
 namespace AnourValar\LaravelAtom\Exceptions;
 
-use Exception;
-
-class InternalValidationException extends Exception
+class InternalValidationException extends \Exception
 {
     /**
      * @var array

@@ -18,13 +18,7 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
             parent::lock($sha1, $connection, $table);
         } catch (\Illuminate\Database\QueryException $e) {
             if ($this->isLockException($e->getMessage())) {
-
-                throw new \AnourValar\LaravelAtom\Exceptions\OptimisticTransactionException(
-                    $e->getSql(),
-                    $e->getBindings(),
-                    $e->getPrevious()
-                );
-
+                throw new \AnourValar\LaravelAtom\Exceptions\OptimisticTransactionException();
             }
 
             throw $e;
