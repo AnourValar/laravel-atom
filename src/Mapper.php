@@ -192,19 +192,22 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
      */
     protected static function handleAttribute(string $name, \ReflectionAttribute $attribute): string
     {
+        // Mapping
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Mapping::class) {
             $args = $attribute->getArguments();
             if (! $args) {
                 throw new \RuntimeException('Mapping attribute requires a name.');
             }
 
-            $changedName = array_shift($args);
-
-            if ($changedName == \AnourValar\LaravelAtom\Mapper\MappingSnakeCase::class) {
-                $changedName = str()->snake($name);
-            }
+            $name = array_shift($args);
         }
 
-        return $changedName;
+        // MappingSnakeCase
+        if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\MappingSnakeCase::class) {
+            $name = str()->snake($name);
+        }
+
+
+        return $name;
     }
 }
