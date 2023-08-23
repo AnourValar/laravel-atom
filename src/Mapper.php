@@ -27,7 +27,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
         }
 
         $class = new \ReflectionClass(static::class);
-        $names = self::getMapping($class);
+        $rules = self::getRules($class);
 
         $args = [];
         foreach ($class->getConstructor()->getParameters() as $param) {
@@ -36,17 +36,19 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
                 throw new \RuntimeException('Constructor Property Promotion must be declared for all attributes.');
             }
 
-            $name = $names[$name];
+            $rule = $rules[$name];
 
             if ($param->isDefaultValueAvailable()) {
-                $value = $data[$name] ?? $param->getDefaultValue();
-            } elseif (array_key_exists($name, $data)) {
-                $value = $data[$name];
+                $value = $data[$rule['name']] ?? $param->getDefaultValue();
+            } elseif (array_key_exists($rule['name'], $data)) {
+                $value = $data[$rule['name']];
+            } elseif (array_key_exists('default_value', $rule)) {
+                $value = $rule['default_value'];
             } else {
                 if (stripos((string) $param->getType(), \AnourValar\LaravelAtom\Mapper\Optional::class) !== false) {
                     $value = new \AnourValar\LaravelAtom\Mapper\Optional();
                 } else {
-                    throw new \RuntimeException('Required parameter is missing: ' . $name);
+                    throw new \RuntimeException('Required parameter is missing: ' . $rule['name']);
                 }
             }
 
@@ -68,7 +70,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
      */
     public function toArray(): array
     {
-        return $this->resolveToArray((array) $this,  static::getMapping(new \ReflectionClass(static::class)));
+        return $this->resolveToArray((array) $this,  static::getRules(new \ReflectionClass(static::class)));
     }
 
     /**
@@ -128,10 +130,10 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
 
     /**
      * @param array $data
-     * @param array $mapping
+     * @param array $rules
      * @return array
      */
-    protected function resolveToArray(array $data, array $mapping = []): array
+    protected function resolveToArray(array $data, array $rules = []): array
     {
         $result = [];
 
@@ -151,8 +153,8 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
                 $value = $this->resolveToArray($value);
             }
 
-            if ($mapping) {
-                $result[$mapping[$key]] = $value;
+            if ($rules) {
+                $result[$rules[$key]['name']] = $value;
             } else {
                 $result[$key] = $value;
             }
@@ -165,7 +167,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
      * @param \ReflectionClass $class
      * @return array
      */
-    protected static function getMapping(\ReflectionClass $class): array
+    protected static function getRules(\ReflectionClass $class): array
     {
         $result = [];
 
@@ -173,24 +175,25 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
         foreach ($class->getConstructor()->getParameters() as $param) {
             $originalName = $param->getName();
 
-            $changedName = $originalName;
+            $result[$originalName] = ['name' => $originalName];
             foreach (array_merge($attributes, $param->getAttributes()) as $attribute) {
-                $changedName = static::handleAttribute($changedName, $attribute);
+                $result[$originalName] = array_replace(
+                    $result[$originalName],
+                    static::handleAttribute($result[$originalName], $attribute)
+                );
             }
-
-            $result[$originalName] = $changedName;
         }
 
         return $result;
     }
 
     /**
-     * @param string $name
+     * @param array $rule
      * @param \ReflectionAttribute $attribute
      * @throws \RuntimeException
      * @return string
      */
-    protected static function handleAttribute(string $name, \ReflectionAttribute $attribute): string
+    protected static function handleAttribute(array $rule, \ReflectionAttribute $attribute): array
     {
         // Mapping
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Mapping::class) {
@@ -199,15 +202,25 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
                 throw new \RuntimeException('Mapping attribute requires a name.');
             }
 
-            $name = array_shift($args);
+            return ['name' => array_shift($args)];
         }
 
         // MappingSnakeCase
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\MappingSnakeCase::class) {
-            $name = str()->snake($name);
+            return ['name' => str()->snake($rule['name'])];
+        }
+
+        // DefaultValue
+        if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\DefaultValue::class) {
+            $args = $attribute->getArguments();
+            if (! $args) {
+                throw new \RuntimeException('DefaultValue attribute requires a value.');
+            }
+
+            return ['default_value' => array_shift($args)];
         }
 
 
-        return $name;
+        return [];
     }
 }

@@ -129,5 +129,10 @@ class MapperTest extends \PHPUnit\Framework\TestCase
             ['user_id' => 1, 'manager_id' => 2],
             $mapper->toArray()
         );
+
+        $this->assertSame(
+            ['user_id' => 1, 'manager_id' => 3],
+            ModeMapper::from(['user_id' => '1'])->toArray()
+        );
     }
 }
