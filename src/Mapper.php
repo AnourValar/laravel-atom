@@ -54,7 +54,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
 
             if (is_array($value) && is_subclass_of($param->getType()->getName(), self::class)) {
                 $class = $param->getType()->getName();
-                $value = new $class(...$value);
+                $value = $class::from($value);
             }
 
             $args[] = $value;
