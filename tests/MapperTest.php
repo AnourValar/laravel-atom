@@ -43,6 +43,9 @@ class MapperTest extends \PHPUnit\Framework\TestCase
             $mapper->toArray()
         );
 
+        $this->assertSame(['a' => '1'], $mapper->only('a'));
+        $this->assertSame(['a' => '1', 'b' => null], $mapper->only(['a', 'b']));
+
         $this->assertSame(
             json_encode([
                 'a' => '1',

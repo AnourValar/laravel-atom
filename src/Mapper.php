@@ -74,6 +74,25 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
     }
 
     /**
+     * Get data (filtered)
+     *
+     * @param array|string $keys
+     * @return array
+     */
+    public function only(array|string $keys): array
+    {
+        $keys = (array) $keys;
+
+        return array_filter(
+            $this->toArray(),
+            function ($key) use ($keys) {
+                return in_array($key, $keys);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+    }
+
+    /**
      * @see \JsonSerializable
      *
      * @return array
@@ -191,7 +210,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
      * @param array $rule
      * @param \ReflectionAttribute $attribute
      * @throws \RuntimeException
-     * @return string
+     * @return array
      */
     protected static function handleAttribute(array $rule, \ReflectionAttribute $attribute): array
     {
