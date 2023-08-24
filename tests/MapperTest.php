@@ -123,19 +123,24 @@ class MapperTest extends \PHPUnit\Framework\TestCase
      */
     public function test_mode()
     {
-        $mapper = ModeMapper::from(['user_id' => '1', 'manager_id' => '2']);
+        $mapper = ModeMapper::from(['user_id' => '1', 'manager_id' => '2', 'ids' => [1]]);
 
         $this->assertSame(1, $mapper['userId']);
         $this->assertSame(1, $mapper->userId);
 
         $this->assertSame(
-            ['user_id' => 1, 'manager_id' => 2],
+            ['user_id' => 1, 'manager_id' => 2, 'ids' => [1]],
             $mapper->toArray()
         );
 
         $this->assertSame(
-            ['user_id' => 1, 'manager_id' => 3],
-            ModeMapper::from(['user_id' => '1'])->toArray()
+            ['user_id' => 1, 'manager_id' => 3, 'ids' => []],
+            ModeMapper::from(['user_id' => '1', 'ids' => []])->toArray()
+        );
+
+        $this->assertSame(
+            ['user_id' => 1, 'manager_id' => 3, 'ids' => [], 'name' => 'foo'],
+            ModeMapper::from(['user_id' => '1', 'ids' => null, 'name' => ' foo '])->toArray()
         );
     }
 }

@@ -57,6 +57,16 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
                 $value = $class::from($value);
             }
 
+            if (! $value instanceof \AnourValar\LaravelAtom\Mapper\Optional) {
+                if (isset($rule['cast'])) {
+                    settype($value, $rule['cast']);
+                }
+
+                if (isset($rule['mutate'])) {
+                    $value = $rule['mutate']($value);
+                }
+            }
+
             $args[] = $value;
         }
 
@@ -237,6 +247,26 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
             }
 
             return ['default_value' => array_shift($args)];
+        }
+
+        // Cast
+        if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Cast::class) {
+            $args = $attribute->getArguments();
+            if (! $args) {
+                throw new \RuntimeException('Cast attribute requires a value.');
+            }
+
+            return ['cast' => array_shift($args)];
+        }
+
+        // Mutate
+        if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Mutate::class) {
+            $args = $attribute->getArguments();
+            if (! $args) {
+                throw new \RuntimeException('Mutate attribute requires a value.');
+            }
+
+            return ['mutate' => array_shift($args)];
         }
 
 
