@@ -65,6 +65,18 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
                 if (isset($rule['mutate'])) {
                     $value = $rule['mutate']($value);
                 }
+
+                if (isset($rule['array_of'])) {
+                    $arrayOf = $rule['array_of'];
+                    foreach ($value as &$item) {
+                        if ($item instanceof $arrayOf) {
+                            continue;
+                        }
+
+                        $item = $arrayOf::from($item);
+                    }
+                    unset($item);
+                }
             }
 
             $args[] = $value;
@@ -167,6 +179,10 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
         $result = [];
 
         foreach ($data as $key => $value) {
+            if ($rules && ! empty($rules[$key]['exclude'])) {
+                continue;
+            }
+
             if (is_object($value)) {
                 if ($value instanceof \AnourValar\LaravelAtom\Mapper\Optional) {
                     unset($data[$key]);
@@ -226,12 +242,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
     {
         // Mapping
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Mapping::class) {
-            $args = $attribute->getArguments();
-            if (! $args) {
-                throw new \RuntimeException('Mapping attribute requires a name.');
-            }
-
-            return ['name' => array_shift($args)];
+            return ['name' => self::getArg($attribute)];
         }
 
         // MappingSnakeCase
@@ -241,35 +252,50 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
 
         // DefaultValue
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\DefaultValue::class) {
-            $args = $attribute->getArguments();
-            if (! $args) {
-                throw new \RuntimeException('DefaultValue attribute requires a value.');
-            }
-
-            return ['default_value' => array_shift($args)];
+            return ['default_value' => self::getArg($attribute)];
         }
 
         // Cast
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Cast::class) {
-            $args = $attribute->getArguments();
-            if (! $args) {
-                throw new \RuntimeException('Cast attribute requires a value.');
-            }
-
-            return ['cast' => array_shift($args)];
+            return ['cast' => self::getArg($attribute)];
         }
 
         // Mutate
         if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Mutate::class) {
-            $args = $attribute->getArguments();
-            if (! $args) {
-                throw new \RuntimeException('Mutate attribute requires a value.');
+            return ['mutate' => self::getArg($attribute)];
+        }
+
+        // Exclude
+        if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Exclude::class) {
+            return ['exclude' => true];
+        }
+
+        // ArrayOf
+        if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\ArrayOf::class) {
+            $arg = self::getArg($attribute);
+            if (! is_subclass_of($arg, self::class)) {
+                throw new \RuntimeException('ArrayOf unsupported type.');
             }
 
-            return ['mutate' => array_shift($args)];
+            return ['array_of' => $arg];
         }
 
 
         return [];
+    }
+
+    /**
+     * @param \ReflectionAttribute $attribute
+     * @throws \RuntimeException
+     * @return mixed
+     */
+    protected static function getArg(\ReflectionAttribute $attribute)
+    {
+        $args = $attribute->getArguments();
+        if (! $args) {
+            throw new \RuntimeException($attribute->getName() . ' attribute requires an argument.');
+        }
+
+        return array_shift($args);
     }
 }

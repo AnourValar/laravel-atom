@@ -9,6 +9,8 @@ use AnourValar\LaravelAtom\Tests\Mappers\SimpleMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ComplexMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\NestedMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ModeMapper;
+use AnourValar\LaravelAtom\Tests\Mappers\ArrayOfMapper;
+use AnourValar\LaravelAtom\Tests\Mappers\ExcludeMapper;
 
 class MapperTest extends \PHPUnit\Framework\TestCase
 {
@@ -141,6 +143,38 @@ class MapperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(
             ['user_id' => 1, 'manager_id' => 3, 'ids' => [], 'name' => 'foo'],
             ModeMapper::from(['user_id' => '1', 'ids' => null, 'name' => ' foo '])->toArray()
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function test_arrayOf_exclude()
+    {
+        $mapper = ArrayOfMapper::from([
+            'excludes' => [
+                ['a' => 1, 'b' => 2],
+                ExcludeMapper::from(['a' => 3, 'b' => 4]),
+                ['a' => 5, 'b' => 6],
+            ],
+        ]);
+
+        $this->assertSame('1', $mapper->excludes[0]['a']);
+        $this->assertSame('2', $mapper->excludes[0]['b']);
+        $this->assertSame(['b' => '2'], $mapper->excludes[0]->toArray());
+        $this->assertInstanceOf(ExcludeMapper::class, $mapper->excludes[0]);
+        $this->assertInstanceOf(ExcludeMapper::class, $mapper->excludes[1]);
+        $this->assertInstanceOf(ExcludeMapper::class, $mapper->excludes[2]);
+
+        $this->assertSame(
+            [
+                'excludes' => [
+                    ['b' => '2'],
+                    ['b' => '4'],
+                    ['b' => '6'],
+                ],
+            ],
+            $mapper->toArray()
         );
     }
 }
