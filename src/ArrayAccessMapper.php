@@ -125,6 +125,6 @@ class ArrayAccessMapper implements \ArrayAccess
      */
     public function offsetGet($offset): mixed
     {
-        return ( $this->data[$offset] ?? ($this->instanceInsteadOfNull ? (new static([], true)) : null) );
+        return ($this->data[$offset] ?? ($this->instanceInsteadOfNull ? (new static([], true)) : null));
     }
 }

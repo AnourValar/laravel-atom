@@ -61,7 +61,7 @@ class NumberHelper
      * Amount as text
      *
      * @param int|float $amount
-     * @param bool $ucFirst
+     * @param bool $ucfirst
      * @return string
      */
     public function spellout(int|float $amount, bool $ucfirst = true): string

@@ -13,7 +13,7 @@ class DateHelper
      * @param string|null $default
      * @return string|null
      */
-    function formatDate($date, mixed $time = true, string $timezoneClient = 'UTC', ?string $default = null): ?string
+    public function formatDate($date, mixed $time = true, string $timezoneClient = 'UTC', ?string $default = null): ?string
     {
         if (! $date) {
             return $default;
@@ -25,7 +25,7 @@ class DateHelper
 
         if (! $date instanceof \Carbon\CarbonInterface) {
             //try {
-                $date = \Date::parse($date);
+            $date = \Date::parse($date);
             //} catch (\Carbon\Exceptions\InvalidFormatException $e) {
             //    return $default;
             //}
@@ -54,7 +54,7 @@ class DateHelper
      * @param string|null $default
      * @return string|null
      */
-    function formatDateTime($date, string $timezoneClient = 'UTC', ?string $default = null): ?string
+    public function formatDateTime($date, string $timezoneClient = 'UTC', ?string $default = null): ?string
     {
         if (! $date) {
             return $default;
@@ -62,7 +62,7 @@ class DateHelper
 
         if (! $date instanceof \Carbon\CarbonInterface) {
             //try {
-                $date = \Date::parse($date);
+            $date = \Date::parse($date);
             //} catch (\Carbon\Exceptions\InvalidFormatException $e) {
             //    return $default;
             //}
@@ -79,7 +79,7 @@ class DateHelper
      * @param string|null $default
      * @return string|null
      */
-    function formatTime($date, string $timezoneClient = 'UTC', ?string $default = null): ?string
+    public function formatTime($date, string $timezoneClient = 'UTC', ?string $default = null): ?string
     {
         if (! $date) {
             return $default;
@@ -87,7 +87,7 @@ class DateHelper
 
         if (! $date instanceof \Carbon\CarbonInterface) {
             //try {
-                $date = \Date::parse($date);
+            $date = \Date::parse($date);
             //} catch (\Carbon\Exceptions\InvalidFormatException $e) {
             //    return $default;
             //}

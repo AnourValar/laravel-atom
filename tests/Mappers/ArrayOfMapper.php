@@ -7,7 +7,7 @@ use AnourValar\LaravelAtom\Mapper\ArrayOf;
 
 class ArrayOfMapper extends Mapper
 {
-     public function __construct(
+    public function __construct(
         #[ArrayOf(ExcludeMapper::class)]
         public array $excludes,
     ) {

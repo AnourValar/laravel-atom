@@ -8,7 +8,7 @@ use AnourValar\LaravelAtom\Mapper\MappingSnakeCase;
 
 class SimpleMapper extends Mapper
 {
-     public function __construct(
+    public function __construct(
         public string $a,
         public $b,
         public ?string $c = null,

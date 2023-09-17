@@ -8,7 +8,7 @@ use AnourValar\LaravelAtom\Mapper\MappingSnakeCase;
 
 class ComplexMapper extends Mapper
 {
-     public function __construct(
+    public function __construct(
         public int $userId,
         #[Mapping('boss_id')]
         public int $managerId,

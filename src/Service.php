@@ -108,7 +108,7 @@ class Service
         $table = $this->config['locks']['table'];
 
         $class = $this->config['locks']['strategies'][$this->config['locks']['strategy']];
-        (new $class)->lock($sha1, $connection, $table);
+        (new $class())->lock($sha1, $connection, $table);
 
         if ($this->lockHook) {
             ($this->lockHook)($sha1, func_get_args());
@@ -289,7 +289,7 @@ class Service
      */
     protected function shouldCommit($connection)
     {
-         return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
+        return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
     }
 
     /**
@@ -298,6 +298,6 @@ class Service
      */
     protected function shouldRollBack($connection)
     {
-         return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
+        return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
     }
 }

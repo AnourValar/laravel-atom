@@ -45,7 +45,8 @@ class Select2
     {
         $content = $response->getOriginalContent();
 
-        if (! $content instanceof \Illuminate\Pagination\LengthAwarePaginator
+        if (
+            ! $content instanceof \Illuminate\Pagination\LengthAwarePaginator
             && ! $content instanceof \Illuminate\Pagination\CursorPaginator
             && ! $content instanceof \Illuminate\Pagination\Paginator
             && $response->isSuccessful()

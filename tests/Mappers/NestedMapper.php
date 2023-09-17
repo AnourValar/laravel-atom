@@ -9,7 +9,7 @@ use AnourValar\LaravelAtom\Mapper\Optional;
 
 class NestedMapper extends Mapper
 {
-     public function __construct(
+    public function __construct(
         public string|Optional $a,
     ) {
 

@@ -1,0 +1,32 @@
+parameters:
+
+    paths:
+        - src
+        - tests
+
+    # The level 9 is the highest level
+    level: 5
+
+    ignoreErrors:
+        - '#Call to static method#'
+        - '#Unsafe usage of new static\(\)#'
+        - '#Method AnourValar\\LaravelAtom\\Helpers\\NumberHelper\:\:encodeMultiple\(\) should return int\|null but returns float#'
+        - '#Result of method AnourValar\\LaravelAtom\\Service\:\:lock\(\) \(void\) is used\.#'
+        - '#Parameter \#1 \$a#'
+        - '#Parameter \#4 \$d#'
+        - '#Call to an undefined method#'
+        - '#If condition is always true#'
+        - '#Call to an undefined static#'
+
+    excludePaths:
+
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    checkAlwaysTrueInstanceof: true
+    reportMaybesInMethodSignatures: true
+    reportStaticMethodSignatures: true
+    checkUninitializedProperties: true
+    checkDynamicProperties: true
+    reportAlwaysTrueInLastCondition: true
+    reportWrongPhpDocTypeInVarTag: true
+    checkMissingCallableSignature: true

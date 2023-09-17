@@ -50,7 +50,7 @@ class StringHelper
      */
     public function canonizeEmail(?string $email): string
     {
-        return trim( mb_strtolower($email) );
+        return trim(mb_strtolower($email));
     }
 
     /**

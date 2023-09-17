@@ -13,7 +13,7 @@ use AnourValar\LaravelAtom\Mapper\Optional;
 #[MappingSnakeCase]
 class ModeMapper extends Mapper
 {
-     public function __construct(
+    public function __construct(
         public int $userId,
         #[DefaultValue(3)]
         public int $managerId,

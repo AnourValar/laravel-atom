@@ -92,7 +92,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
      */
     public function toArray(): array
     {
-        return $this->resolveToArray((array) $this,  static::getRules(new \ReflectionClass(static::class)));
+        return $this->resolveToArray((array) $this, static::getRules(new \ReflectionClass(static::class)));
     }
 
     /**
