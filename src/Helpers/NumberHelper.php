@@ -22,10 +22,10 @@ class NumberHelper
     /**
      * Formatting (for display)
      *
-     * @param int|null $amount
+     * @param null|int|float $amount
      * @return float|null
      */
-    public function decodeMultiple(?int $amount): float|null
+    public function decodeMultiple(null|int|float $amount): float|null
     {
         if (! isset($amount)) {
             return null;

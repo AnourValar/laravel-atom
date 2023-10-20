@@ -126,6 +126,15 @@ trait HandlerRenderTrait
 
         }
 
+        // MassAssignmentException
+        if ($e instanceof \Illuminate\Database\Eloquent\MassAssignmentException) {
+
+            if ($request->expectsJson()) {
+                $response->setStatusCode(400)->setData(['message' => $e->getMessage(), 'errors' => []]);
+            }
+
+        }
+
 
         return $response;
     }
