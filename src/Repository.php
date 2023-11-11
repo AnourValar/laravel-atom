@@ -52,12 +52,12 @@ abstract class Repository
      *
      * @param array $sources
      * @param string $groupBy
+     * @param array $structure
      * @return array
      */
-    protected function mergeSources(array $sources, string $groupBy): array
+    protected function mergeSources(array $sources, string $groupBy, array $structure = []): array
     {
         $result = [];
-        $structure = [];
 
         foreach ($sources as $source) {
             foreach ($source as $item) {
