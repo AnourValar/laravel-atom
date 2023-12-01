@@ -103,7 +103,7 @@ class Service
      */
     public function lock(): void
     {
-        $sha1 = sha1('/' . $this->canonizeArgs(func_get_args()) . '/');
+        $sha1 = sha1(serialize($this->canonizeArgs(func_get_args())));
         $connection = \DB::connection($this->config['locks']['connection']);
         $table = $this->config['locks']['table'];
 
@@ -240,32 +240,22 @@ class Service
      */
     protected function canonizeArgs($value)
     {
-        if (is_scalar($value)) {
-            if (is_string($value)) {
-                $value = trim(mb_strtolower($value));
-            }
-
-            if ($value === '' || $value === false) {
-                return 0;
-            }
-
-            return $value;
-        }
-
-        if (is_iterable($value)) {
-            foreach ($value as &$item) {
-                $item = $this->canonizeArgs($item);
-            }
-            unset($item);
-
-            return implode('/', $value);
-        }
-
         if ($value === null && ! \App::isProduction()) {
             throw new \RuntimeException('Null lock.');
         }
 
-        return 0;
+        if (is_array($value)) {
+            foreach ($value as &$item) {
+                $item = $this->canonizeArgs($item);
+            }
+            unset($item);
+        }
+
+        if (is_integer($value) || is_float($value)) {
+            $value = (string) $value;
+        }
+
+        return $value;
     }
 
     /**

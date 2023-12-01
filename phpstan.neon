@@ -17,6 +17,7 @@ parameters:
         - '#Call to an undefined method#'
         - '#If condition is always true#'
         - '#Call to an undefined static#'
+        - '#Method class\@anonymous\/tests\/ServiceTest.php\:12\:\:obtain\(\)#'
 
     excludePaths:
 
