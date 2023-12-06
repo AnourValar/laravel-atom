@@ -31,17 +31,16 @@ class Select2
         }
 
         $response = $next($request);
-        $this->convertResponse($response, $request);
+        $this->convertResponse($response);
 
         return $response;
     }
 
     /**
      * @param \Symfony\Component\HttpFoundation\Response $response
-     * @param \Illuminate\Http\Request $request
      * @return void
      */
-    private function convertResponse(\Symfony\Component\HttpFoundation\Response &$response, Request $request): void
+    private function convertResponse(\Symfony\Component\HttpFoundation\Response &$response): void
     {
         $content = $response->getOriginalContent();
 
