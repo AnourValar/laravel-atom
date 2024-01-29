@@ -12,7 +12,7 @@ use AnourValar\LaravelAtom\Tests\Mappers\ModeMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ArrayOfMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ExcludeMapper;
 
-class MapperTest extends \PHPUnit\Framework\TestCase
+class MapperTest extends \Orchestra\Testbench\TestCase
 {
     /**
      * @return void
@@ -67,6 +67,14 @@ class MapperTest extends \PHPUnit\Framework\TestCase
             ],
             (new SimpleMapper(1, '2', '3', '4'))->toArray()
         );
+
+        $this->expectException(\RuntimeException::class);
+        try {
+            SimpleMapper::from(['a' => 1, 'b' => '2', 'eee' => '3']);
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('eee', $e->getMessage());
+            throw $e;
+        }
     }
 
     /**

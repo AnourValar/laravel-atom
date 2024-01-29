@@ -80,6 +80,11 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
             }
 
             $args[] = $value;
+            unset($data[$rule['name']]);
+        }
+
+        if ($data && ! \App::isProduction()) {
+            throw new \RuntimeException('Unused attributes: ' . implode(', ', array_keys($data)));
         }
 
         return new static(...$args);
