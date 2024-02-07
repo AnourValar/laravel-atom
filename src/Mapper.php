@@ -2,7 +2,11 @@
 
 namespace AnourValar\LaravelAtom;
 
-abstract class Mapper implements \JsonSerializable, \ArrayAccess
+use Illuminate\Contracts\Database\Eloquent\Castable;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Database\Eloquent\Model;
+
+abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
 {
     /**
      * @throws \RuntimeException
@@ -172,6 +176,47 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess
     public function offsetGet($offset): mixed
     {
         return $this->$offset;
+    }
+
+    /**
+     * Eloquent Casts support
+     *
+     * @param array $arguments
+     * @return CastsAttributes
+     */
+    public static function castUsing(array $arguments): CastsAttributes
+    {
+        $class = static::class;
+        return new class ($class) implements CastsAttributes {
+            public function __construct(private string $class)
+            {
+                //
+            }
+
+            /**
+             * @psalm-suppress MethodSignatureMismatch
+             */
+            public function get(Model $model, string $key, mixed $value, array $attributes)
+            {
+                if (! isset($value)) {
+                    return null;
+                }
+
+                return ($this->class)::from(json_decode($value, true));
+            }
+
+            /**
+             * @psalm-suppress MethodSignatureMismatch
+             */
+            public function set(Model $model, string $key, mixed $value, array $attributes)
+            {
+                if (! isset($value)) {
+                    return null;
+                }
+
+                return json_encode(($this->class)::from($value)->toArray(), JSON_UNESCAPED_UNICODE);
+            }
+        };
     }
 
     /**

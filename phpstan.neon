@@ -18,6 +18,7 @@ parameters:
         - '#If condition is always true#'
         - '#Call to an undefined static#'
         - '#Method class\@anonymous\/tests\/ServiceTest.php\:12\:\:obtain\(\)#'
+        - '#AnourValar\\LaravelAtom\\Tests\\Models\\Post\:\:\$data#'
 
     excludePaths:
 

@@ -11,6 +11,7 @@ use AnourValar\LaravelAtom\Tests\Mappers\NestedMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ModeMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ArrayOfMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ExcludeMapper;
+use AnourValar\LaravelAtom\Tests\Models\Post;
 
 class MapperTest extends \Orchestra\Testbench\TestCase
 {
@@ -184,5 +185,27 @@ class MapperTest extends \Orchestra\Testbench\TestCase
             ],
             $mapper->toArray()
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function test_model()
+    {
+        $post = new Post();
+
+        $post->forceFill(['data' => ['a' => 1, 'b' => 2]]);
+        $this->assertInstanceOf(SimpleMapper::class, $post->data);
+        $this->assertSame(['a' => '1', 'b' => 2, 'c' => null, 'd' => 1], $post->data->toArray());
+        $this->assertSame('1', $post->data->a);
+        $this->assertSame('1', $post->data['a']);
+        $this->assertSame(json_encode(['a' => '1', 'b' => 2, 'c' => null, 'd' => 1]), $post->getAttributes()['data']);
+
+        $post->forceFill(['data' => null]);
+        $this->assertNull($post->data);
+
+        $post->forceFill(['data' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => '4']]);
+        $this->assertInstanceOf(SimpleMapper::class, $post->data);
+        $this->assertSame(['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4], $post->data->toArray());
     }
 }

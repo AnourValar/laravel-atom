@@ -97,7 +97,7 @@ trait HandlerRenderTrait
         if ($e instanceof HttpException && $e->getMessage() == 'Your email address is not verified.') {
 
             if ($request->expectsJson()) {
-                $response->setData(['message' => $e->getMessage(), 'errors' => []]);
+                $response->setData(['message' => $e->getMessage(), 'errors' => ['error' => [trans($e->getMessage())]]]);
             }
 
         }
