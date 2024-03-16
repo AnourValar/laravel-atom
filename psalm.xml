@@ -22,6 +22,7 @@
     </plugins>
 
     <issueHandlers>
+      <ForbiddenCode errorLevel="error" />
       <UnusedClosureParam errorLevel="suppress" />
       <PossiblyUnusedMethod errorLevel="suppress" />
       <UnusedClass errorLevel="suppress" />
@@ -31,10 +32,11 @@
       <MissingTemplateParam errorLevel="suppress" />
       <UnsupportedPropertyReferenceUsage errorLevel="suppress" />
     </issueHandlers>
-    
+
     <forbiddenFunctions>
         <function name="var_dump" />
         <function name="dd" />
         <function name="dump" />
+        <function name="print_r" />
     </forbiddenFunctions>
 </psalm>

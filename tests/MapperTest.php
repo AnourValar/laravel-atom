@@ -202,6 +202,7 @@ class MapperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('1', $post->data['a']);
 
         $post->forceFill(['data' => null]);
+        $this->assertNull($post->getAttributes()['data']);
         $this->assertNull($post->data);
 
         $post->forceFill(['data' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => '4']]);
