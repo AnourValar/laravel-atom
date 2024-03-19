@@ -110,21 +110,21 @@ class LaravelAtomServiceProvider extends ServiceProvider
             }
         });
 
-        // HttpException => verified
+        // HttpException [verified]
         $exceptionHandler->renderable(function (HttpException $e, $request) {
             if ($request->expectsJson() && $e->getMessage() == 'Your email address is not verified.') {
                 return response()->json(['message' => $e->getMessage(), 'errors' => ['error' => [trans($e->getMessage())]]], $e->getStatusCode());
             }
         });
 
-        // TokenMismatchException
+        // TokenMismatchException, HttpException [token mismatch]
         $exceptionHandler->renderable(function (TokenMismatchException|HttpException $e, $request) {
             if ($request->expectsJson() && stripos($e->getMessage(), 'token mismatch') !== false) {
                 return response()->json(['message' => $e->getMessage(), 'errors' => []], $e->getStatusCode());
             }
         });
 
-        // JsonEncodingException [on json columns], InvalidArgumentException [on json content-type], QueryException [etc]
+        // JsonEncodingException [on json columns], InvalidArgumentException [on json content-type], QueryException [invalid encoding]
         $exceptionHandler->renderable(function (JsonEncodingException|\InvalidArgumentException|QueryException $e, $request) {
             if (
                 $e instanceof JsonEncodingException
@@ -132,7 +132,7 @@ class LaravelAtomServiceProvider extends ServiceProvider
                 || ($e instanceof QueryException && stripos($e->getMessage(), 'invalid byte sequence for encoding "UTF8"') !== false)
             ) {
                 if ($request->expectsJson()) {
-                    return response(['message' => 'Malformed UTF-8 characters, possibly incorrectly encoded.'], 400);
+                    return response(['message' => 'Malformed UTF-8 characters, possibly incorrectly encoded.', 'errors' => []], 400);
                 } else {
                     return response('Malformed UTF-8 characters, possibly incorrectly encoded.', 400);
                 }
@@ -142,7 +142,9 @@ class LaravelAtomServiceProvider extends ServiceProvider
         // MassAssignmentException
         $exceptionHandler->renderable(function (\Illuminate\Database\Eloquent\MassAssignmentException $e, $request) {
             if ($request->expectsJson()) {
-                return response()->json(['message' => $e->getMessage(), 'errors' => []], $e->getStatusCode());
+                return response()->json(['message' => $e->getMessage(), 'errors' => []], 400);
+            } else {
+                return response($e->getMessage(), 400);
             }
         });
     }
