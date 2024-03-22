@@ -5,7 +5,7 @@ namespace AnourValar\LaravelAtom\Helpers;
 class NumberHelper
 {
     /**
-     * Canonize
+     * Normalize
      *
      * @param int|float|null $amount
      * @return int|null
@@ -20,7 +20,7 @@ class NumberHelper
     }
 
     /**
-     * Formatting (for display)
+     * Format (for display)
      *
      * @param null|int|float $amount
      * @return float|null
@@ -33,28 +33,6 @@ class NumberHelper
 
         $multiple = config('atom.number.multiple');
         return round($amount / $multiple, (mb_strlen($multiple) - 1));
-    }
-
-    /**
-     * Formatting (for display)
-     *
-     * @param float|null $number
-     * @param int $decimals
-     * @param string|null $default
-     * @return string|null
-     */
-    public function formatNumber(?float $number, int $decimals = 0, ?string $default = null): ?string
-    {
-        if (is_null($number)) {
-            return $default;
-        }
-
-        return number_format(
-            $number,
-            $decimals,
-            trans('laravel-atom::formats.number_format.dec_point'),
-            trans('laravel-atom::formats.number_format.thousands_sep')
-        );
     }
 
     /**

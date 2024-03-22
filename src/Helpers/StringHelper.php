@@ -26,7 +26,7 @@ class StringHelper
     /**
      * Formatting (for display): phone number
      *
-     * @param string $phone
+     * @param string|null $phone
      * @return string|null
      */
     public function formatPhone(?string $phone): ?string
@@ -45,16 +45,20 @@ class StringHelper
     /**
      * Canonize: e-mail
      *
-     * @param string $email
-     * @return string
+     * @param string|null $email
+     * @return string|null
      */
-    public function canonizeEmail(?string $email): string
+    public function canonizeEmail(?string $email): ?string
     {
+        if (! $email) {
+            return $email;
+        }
+
         return trim(mb_strtolower($email));
     }
 
     /**
-     * Generates code
+     * Generates a digital code
      *
      * @param int $length
      * @param bool $debug

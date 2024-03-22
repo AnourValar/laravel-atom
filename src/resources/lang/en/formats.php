@@ -4,8 +4,6 @@ return [
     'datetime_format' => 'Y-m-d H:i',
     'date_format' => 'Y-m-d',
 
-    'number_format' => ['dec_point' => '.', 'thousands_sep' => ','],
-
     'spellout' => ':spellout_int :spellout_dec',
     'spellout_int' => ':int',
     'spellout_dec' => ':dec cents',

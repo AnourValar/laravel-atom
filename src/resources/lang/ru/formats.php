@@ -4,8 +4,6 @@ return [
     'datetime_format' => 'd.m.Y H:i',
     'date_format' => 'd.m.Y',
 
-    'number_format' => ['dec_point' => ',', 'thousands_sep' => ' '],
-
     'spellout' => ':spellout_int :spellout_dec',
     'spellout_int' => ':int рубль|:int рубля|:int рублей',
     'spellout_dec' => ':dec копейка|:dec копейки|:dec копеек',

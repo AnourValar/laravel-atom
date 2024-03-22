@@ -168,6 +168,9 @@ class ArrayHelper
 
     /**
      * Recursively merges arrays with replaces for scalar values
+     * Difference with default functions:
+     * array_replace_recursive - ['0' => ['a']], ['0' => ['b']] => ['0' => ['b']]
+     * array_merge_recursive - ['a' => 1], ['a' => 2] => ['a' => [1, 2]]
      *
      * @param array $array1
      * @param array $array2
