@@ -9,9 +9,9 @@ class ValidationExceptionHandler
      *
      * @param  mixed  $job
      * @param  callable  $next
-     * @return mixed
+     * @return void
      */
-    public function handle($job, $next)
+    public function handle($job, $next): void
     {
         try {
             $next($job);

@@ -193,9 +193,6 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 //
             }
 
-            /**
-             * @psalm-suppress MethodSignatureMismatch
-             */
             public function get(Model $model, string $key, mixed $value, array $attributes)
             {
                 if (! isset($value)) {
@@ -205,9 +202,6 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 return ($this->class)::from(json_decode($value, true));
             }
 
-            /**
-             * @psalm-suppress MethodSignatureMismatch
-             */
             public function set(Model $model, string $key, mixed $value, array $attributes)
             {
                 if (! isset($value)) {
