@@ -23,11 +23,6 @@ class Service
     protected $lockHook;
 
     /**
-     * @var array
-     */
-    protected $booted = ['commit' => false, 'rollback' => false];
-
-    /**
      * @var int
      */
     protected $transactionZeroLevel = 0;
@@ -134,29 +129,7 @@ class Service
             return null;
         }
 
-        $key = $this->registry->push('commit', $connection, $closure);
-
-        if ($this->booted['commit']) {
-            return $key;
-        }
-        $this->booted['commit'] = true;
-
-        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) {
-            $connection = $event->connectionName;
-
-            if (! $this->shouldCommit($connection)) {
-                return;
-            }
-
-            $list = $this->registry->pull('commit', $connection);
-            if ($event instanceof TransactionCommitted) {
-                foreach ($list as $task) {
-                    $task();
-                }
-            }
-        });
-
-        return $key;
+        return $this->registry->push('commit', $connection, $closure);
     }
 
     /**
@@ -176,29 +149,7 @@ class Service
             return null;
         }
 
-        $key = $this->registry->push('rollback', $connection, $closure);
-
-        if ($this->booted['rollback']) {
-            return $key;
-        }
-        $this->booted['rollback'] = true;
-
-        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) {
-            $connection = $event->connectionName;
-
-            if (! $this->shouldRollBack($connection)) {
-                return;
-            }
-
-            $list = $this->registry->pull('rollback', $connection);
-            if ($event instanceof TransactionRolledBack) {
-                foreach ($list as $task) {
-                    $task();
-                }
-            }
-        });
-
-        return $key;
+        return $this->registry->push('rollback', $connection, $closure);
     }
 
     /**
@@ -231,6 +182,37 @@ class Service
         }
 
         $this->registry->remove('rollback', $connection, $key);
+    }
+
+    /**
+     * @param mixed $event
+     * @return void
+     */
+    public function triggerTransaction($event)
+    {
+        $connection = $event->connectionName;
+
+        if ($event instanceof TransactionCommitted) {
+            if (! $this->shouldCommit($connection)) {
+                return;
+            }
+
+            foreach ($this->registry->pull('commit', $connection) as $task) {
+                $task();
+            }
+            $this->registry->pull('rollback', $connection);
+        }
+
+        if ($event instanceof TransactionRolledBack) {
+            if (! $this->shouldRollBack($connection)) {
+                return;
+            }
+
+            foreach ($this->registry->pull('rollback', $connection) as $task) {
+                $task();
+            }
+            $this->registry->pull('commit', $connection);
+        }
     }
 
     /**

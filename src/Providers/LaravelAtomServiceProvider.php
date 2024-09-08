@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\JsonEncodingException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Session\TokenMismatchException;
+use Illuminate\Database\Events\TransactionCommitted;
+use Illuminate\Database\Events\TransactionRolledBack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -48,6 +50,11 @@ class LaravelAtomServiceProvider extends ServiceProvider
 
         // migrations
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        // events
+        \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) {
+            \App::make(\AnourValar\LaravelAtom\Service::class)->triggerTransaction($event);
+        });
     }
 
     /**
