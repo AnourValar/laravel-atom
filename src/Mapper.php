@@ -56,7 +56,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 }
             }
 
-            if (is_array($value) && is_subclass_of($param->getType()->getName(), self::class)) {
+            if (is_array($value) && ! $param->getType() instanceof \ReflectionUnionType && is_subclass_of($param->getType()->getName(), self::class)) {
                 $class = $param->getType()->getName();
                 $value = $class::from($value);
             }

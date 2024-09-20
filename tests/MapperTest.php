@@ -12,6 +12,7 @@ use AnourValar\LaravelAtom\Tests\Mappers\ModeMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ArrayOfMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ExcludeMapper;
 use AnourValar\LaravelAtom\Tests\Models\Post;
+use AnourValar\LaravelAtom\Tests\Mappers\OptionalMapper;
 
 class MapperTest extends \Orchestra\Testbench\TestCase
 {
@@ -184,6 +185,36 @@ class MapperTest extends \Orchestra\Testbench\TestCase
                 ],
             ],
             $mapper->toArray()
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function test_optional()
+    {
+        // Empty
+        $this->assertSame([], OptionalMapper::from([])->toArray());
+
+        // A
+        $this->assertSame(['a' => ['foo']], OptionalMapper::from(['a' => ['foo']])->toArray());
+
+        // B
+        $this->assertSame(
+            ['b' => [['a' => '1', 'b' => 2, 'c' => null, 'd' => 1]]],
+            OptionalMapper::from(['b' => [['a' => 1, 'b' => 2]]])->toArray()
+        );
+
+        // A + B
+        $this->assertSame(
+            [
+                'a' => ['foo'],
+                'b' => [['a' => '1', 'b' => 2, 'c' => null, 'd' => 1], ['a' => '3', 'b' => 4, 'c' => '5', 'd' => 6], ['a' => '7', 'b' => 8, 'c' => null, 'd' => 1]],
+            ],
+            OptionalMapper::from([
+                'a' => ['foo'],
+                'b' => [['a' => 1, 'b' => 2], SimpleMapper::from(['a' => 3, 'b' => 4, 'c' => 5, 'd' => 6]), new SimpleMapper(7, 8)],
+            ])->toArray()
         );
     }
 
