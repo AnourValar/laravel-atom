@@ -25,7 +25,26 @@ class LaravelAtomServiceProvider extends ServiceProvider
     {
         // config
         $this->mergeConfigFrom(__DIR__.'/../resources/config/atom.php', 'atom');
+        $this->mergeConfigFrom(__DIR__.'/../resources/config/bindings.php', 'bindings');
 
+        // bindings
+        foreach (config('bindings') as $interface => $implementation) {
+            if (! isset($implementation['bind'])) {
+                continue;
+            }
+
+            $this->app->singleton($interface, function ($app, $arguments = []) use ($interface, $implementation) {
+                $object = new $implementation['bind'](...$arguments);
+
+                if (interface_exists($interface) && ! $object instanceof $interface) {
+                    throw new \LogicException("{$implementation['bind']} is not instance of {$interface}");
+                }
+
+                return $object;
+            });
+        }
+
+        // sc
         $this->app->singleton(\AnourValar\LaravelAtom\Service::class, function ($app) {
             return new \AnourValar\LaravelAtom\Service(new \AnourValar\LaravelAtom\Registry());
         });
@@ -43,6 +62,7 @@ class LaravelAtomServiceProvider extends ServiceProvider
     {
         // config
         $this->publishes([ __DIR__.'/../resources/config/atom.php' => config_path('atom.php')], 'config');
+        $this->publishes([ __DIR__.'/../resources/config/bindings.php' => config_path('bindings.php')], 'config');
 
         // langs
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravel-atom');
