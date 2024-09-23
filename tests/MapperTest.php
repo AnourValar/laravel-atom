@@ -239,5 +239,8 @@ class MapperTest extends \Orchestra\Testbench\TestCase
         $post->forceFill(['data' => ['a' => 1, 'b' => 2, 'c' => 3, 'd' => '4']]);
         $this->assertInstanceOf(SimpleMapper::class, $post->data);
         $this->assertSame(['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4], $post->data->toArray());
+
+        $this->assertSame(['data' => ['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4]], $post->toArray());
+        $this->assertSame(['data' => json_encode(['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4])], $post->getAttributes());
     }
 }

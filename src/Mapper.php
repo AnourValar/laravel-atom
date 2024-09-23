@@ -70,7 +70,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                     $value = $rule['mutate']($value);
                 }
 
-                if (isset($rule['array_of'])) {
+                if (isset($rule['array_of']) && isset($value)) {
                     $arrayOf = $rule['array_of'];
                     foreach ($value as &$item) {
                         if ($item instanceof $arrayOf) {
@@ -101,7 +101,15 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
      */
     public function toArray(): array
     {
-        return $this->resolveToArray((array) $this, static::getRules(new \ReflectionClass(static::class)));
+        $result = $this->resolveToArray((array) $this, static::getRules(new \ReflectionClass(static::class)));
+
+        foreach ((new \ReflectionClass(static::class))->getAttributes() as $attribute) {
+            if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Jsonb::class) {
+                $result = $this->sort($result);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -209,6 +217,11 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 }
 
                 return json_encode(($this->class)::from($value)->toArray(), JSON_UNESCAPED_UNICODE);
+            }
+
+            public function serialize(Model $model, string $key, mixed $value, array $attributes): array
+            {
+                return $value->toArray();
             }
         };
     }
@@ -341,5 +354,34 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
         }
 
         return array_shift($args);
+    }
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function sort(mixed $value): mixed
+    {
+        if (is_array($value) && ! array_is_list($value)) {
+            uksort($value, function ($a, $b) {
+                $strlenA = mb_strlen($a);
+                $strlenB = mb_strlen($b);
+
+                if ($strlenA == $strlenB) {
+                    return $a <=> $b;
+                }
+
+                return $strlenA <=> $strlenB;
+            });
+        }
+
+        if (is_array($value)) {
+            foreach ($value as &$item) {
+                $item = $this->sort($item);
+            }
+            unset($item);
+        }
+
+        return $value;
     }
 }
