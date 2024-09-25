@@ -94,7 +94,7 @@ trait PostgresTrait
     protected function addRumFullText(string $tableName, string $columnName = 'search_fulltext', string $locale = null): void
     {
         if (! $locale) {
-            $locale = config('app.fallback_locale');
+            $locale = config('app.fulltext_locale', config('app.fallback_locale'));
         }
 
         \DB::statement("ALTER TABLE {$tableName} ADD COLUMN {$columnName} TSVECTOR");
