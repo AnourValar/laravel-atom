@@ -84,7 +84,7 @@ trait PostgresTrait
     }
 
     /**
-     * create a fulltext search (tsvector) column with RUM index
+     * Create a fulltext search (tsvector) column with RUM index
      *
      * @param string $tableName
      * @param string $columnName
