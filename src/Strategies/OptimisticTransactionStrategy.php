@@ -7,18 +7,18 @@ use Illuminate\Database\Connection;
 class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
 {
     /**
-     * @throws \AnourValar\LaravelAtom\Exceptions\OptimisticTransactionException
+     * @throws \AnourValar\LaravelAtom\Exceptions\OptimisticException
      *
      * {@inheritDoc}
      * @see \AnourValar\LaravelAtom\Strategies\PessimisticTransactionStrategy::lock()
      */
-    public function lock(string $sha1, Connection $connection, string $table): void
+    public function lock(string $sha1, Connection $connection): void
     {
         try {
-            parent::lock($sha1, $connection, $table);
+            parent::lock($sha1, $connection);
         } catch (\Illuminate\Database\QueryException $e) {
             if ($this->isLockException($e->getMessage())) {
-                throw new \AnourValar\LaravelAtom\Exceptions\OptimisticTransactionException();
+                throw new \AnourValar\LaravelAtom\Exceptions\OptimisticException();
             }
 
             throw $e;
@@ -28,24 +28,23 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
     /**
      * @param string $sha1
      * @param \Illuminate\Database\Connection $connection
-     * @param string $table
      * @param bool $reTry
      * @throws \Exception
      * @return void
      */
-    protected function apply(string $sha1, Connection $connection, string $table, bool $reTry = true): void
+    protected function apply(string $sha1, Connection $connection, bool $reTry = true): void
     {
         $connection->beginTransaction();
 
         try {
-            $record = $connection->table($table)->lock($this->getLock())->where('sha1', '=', $sha1)->first();
+            $record = $connection->table('locks')->lock($this->getLock())->where('sha1', '=', $sha1)->first();
         } catch (\Illuminate\Database\QueryException $e) {
             $connection->rollBack();
             throw $e;
         }
 
         if ($record) {
-            $connection->table($table)->where('sha1', '=', $sha1)->update(['updated_at' => date('Y-m-d H:i:s')]);
+            $connection->table('locks')->where('sha1', '=', $sha1)->update(['updated_at' => date('Y-m-d H:i:s')]);
 
             $connection->commit();
             return;
@@ -57,7 +56,7 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
         }
 
         try {
-            $connection->table($table)->insert(['sha1' => $sha1, 'updated_at' => date('Y-m-d H:i:s')]);
+            $connection->table('locks')->insert(['sha1' => $sha1, 'updated_at' => date('Y-m-d H:i:s')]);
             $connection->commit();
         } catch (\Illuminate\Database\QueryException $e) {
             $connection->rollBack();
@@ -67,7 +66,7 @@ class OptimisticTransactionStrategy extends PessimisticTransactionStrategy
             throw $e;
         }
 
-        $this->apply($sha1, $connection, $table, false);
+        $this->apply($sha1, $connection, false);
     }
 
     /**

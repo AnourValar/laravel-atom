@@ -100,15 +100,13 @@ class Service
     {
         $sha1 = sha1(serialize($this->canonizeArgs(func_get_args())));
         $connection = \DB::connection($this->config['locks']['connection']);
-        $table = $this->config['locks']['table'];
 
         $class = $this->config['locks']['strategies'][$this->config['locks']['strategy']];
-        (new $class())->lock($sha1, $connection, $table);
+        (new $class())->lock($sha1, $connection);
 
         if ($this->lockHook) {
             ($this->lockHook)($sha1, func_get_args());
         }
-        $this->cleanUp($connection, $table);
     }
 
     /**
@@ -238,21 +236,6 @@ class Service
         }
 
         return $value;
-    }
-
-    /**
-     * @param \Illuminate\Database\Connection $connection
-     * @param string $table
-     * @return  void
-     */
-    protected function cleanUp(\Illuminate\Database\Connection $connection, string $table): void
-    {
-        if (! mt_rand(0, 50)) {
-            $connection
-                ->table($table)
-                ->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime('-5 days')))
-                ->delete();
-        }
     }
 
     /**

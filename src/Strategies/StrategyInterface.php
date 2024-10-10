@@ -11,9 +11,8 @@ interface StrategyInterface
      *
      * @param string $sha1
      * @param \Illuminate\Database\Connection $connection
-     * @param string $table
      * @throws \Exception
      * @return void
      */
-    public function lock(string $sha1, Connection $connection, string $table): void;
+    public function lock(string $sha1, Connection $connection): void;
 }

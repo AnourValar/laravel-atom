@@ -2,6 +2,6 @@
 
 namespace AnourValar\LaravelAtom\Exceptions;
 
-class OptimisticTransactionException extends \Exception
+class OptimisticException extends \Exception
 {
 }

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::connection(config('atom.locks.connection'))->create(config('atom.locks.table'), function (Blueprint $table) {
+        Schema::connection(config('atom.locks.connection'))->create('locks', function (Blueprint $table) {
             $table->string('sha1', 40)->unique();
             $table->timestamp('updated_at')->nullable()->index();
         });
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::connection(config('atom.locks.connection'))->dropIfExists(config('atom.locks.table'));
+        Schema::connection(config('atom.locks.connection'))->dropIfExists('locks');
     }
 };

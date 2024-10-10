@@ -69,7 +69,8 @@ class LaravelAtomServiceProvider extends ServiceProvider
         $this->publishes([__DIR__.'/../resources/lang/' => lang_path('vendor/laravel-atom')]);
 
         // migrations
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        //$this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->publishes([__DIR__.'/../database/migrations/' => database_path('migrations')], 'migrations');
 
         // events
         \Event::listen([TransactionCommitted::class, TransactionRolledBack::class], function ($event) {
