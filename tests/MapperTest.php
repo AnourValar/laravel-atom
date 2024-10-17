@@ -13,6 +13,7 @@ use AnourValar\LaravelAtom\Tests\Mappers\ArrayOfMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ExcludeMapper;
 use AnourValar\LaravelAtom\Tests\Models\Post;
 use AnourValar\LaravelAtom\Tests\Mappers\OptionalMapper;
+use AnourValar\LaravelAtom\Tests\Mappers\JsonbMapper;
 
 class MapperTest extends \Orchestra\Testbench\TestCase
 {
@@ -242,5 +243,21 @@ class MapperTest extends \Orchestra\Testbench\TestCase
 
         $this->assertSame(['data' => ['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4]], $post->toArray());
         $this->assertSame(['data' => json_encode(['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4])], $post->getAttributes());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_jsonb()
+    {
+        $mapper = JsonbMapper::from([
+            'aa' => 1,
+            'a' => 2,
+        ]);
+
+        $this->assertSame(
+            ['a' => '2', 'aa' => '1'],
+            $mapper->toArray()
+        );
     }
 }

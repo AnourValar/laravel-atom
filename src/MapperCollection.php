@@ -2,8 +2,12 @@
 
 namespace AnourValar\LaravelAtom;
 
-abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayAccess
+use Illuminate\Contracts\Database\Eloquent\Castable;
+
+abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayAccess, Castable
 {
+    use \AnourValar\LaravelAtom\Traits\EloquentCast;
+
     /**
      * Mapper class
      *
@@ -41,11 +45,15 @@ abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayA
     /**
      * Create an object from the input
      *
-     * @param array $data
+     * @param array|self $data
      * @return static
      */
-    public static function from(array $data): static
+    public static function from(array|self $data): static
     {
+        if ($data instanceof self) {
+            $data = $data->toArray();
+        }
+
         return new static($data);
     }
 
@@ -60,6 +68,12 @@ abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayA
 
         foreach ($this->data as $key => $item) {
             $result[$key] = $item->toArray();
+        }
+
+        foreach ((new \ReflectionClass(static::class))->getAttributes() as $attribute) {
+            if ($attribute->getName() == \AnourValar\LaravelAtom\Mapper\Jsonb::class) {
+                $result = $this->sort($result);
+            }
         }
 
         return $result;

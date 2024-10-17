@@ -12,5 +12,6 @@ class Post extends \Illuminate\Database\Eloquent\Model
     protected $casts = [
         'id' => 'integer',
         'data' => \AnourValar\LaravelAtom\Tests\Mappers\SimpleMapper::class,
+        'data2' => \AnourValar\LaravelAtom\Tests\Mappers\MapperCollectionSimple::class,
     ];
 }

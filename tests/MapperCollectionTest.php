@@ -4,6 +4,9 @@ namespace AnourValar\LaravelAtom\Tests;
 
 use AnourValar\LaravelAtom\Tests\Mappers\MapperCollectionSimple;
 use AnourValar\LaravelAtom\Tests\Mappers\SimpleMapper;
+use AnourValar\LaravelAtom\Tests\Mappers\MapperCollectionJsonb;
+use AnourValar\LaravelAtom\Tests\Mappers\JsonMapper;
+use AnourValar\LaravelAtom\Tests\Models\Post;
 
 class MapperCollectionTest extends \PHPUnit\Framework\TestCase
 {
@@ -48,6 +51,9 @@ class MapperCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['a' => 'a3', 'b' => 'b3', 'c' => null, 'd' => 1], $mapper[$keys[2]]->toArray());
     }
 
+    /**
+     * @return void
+     */
     public static function provideSimpleData()
     {
         return [
@@ -68,5 +74,42 @@ class MapperCollectionTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
         ];
+    }
+
+    /**
+     * @return void
+     */
+    public function test_model()
+    {
+        $post = new Post();
+
+        $post->forceFill(['data2' => [['a' => 1, 'b' => 2]]]);
+        $this->assertSame(json_encode([['a' => '1', 'b' => 2, 'c' => null, 'd' => 1]]), $post->getAttributes()['data2']);
+        $this->assertInstanceOf(SimpleMapper::class, $post->data2[0]);
+        $this->assertSame([['a' => '1', 'b' => 2, 'c' => null, 'd' => 1]], $post->data2->toArray());
+        $this->assertSame('1', $post->data2[0]->a);
+        $this->assertSame('1', $post->data2[0]['a']);
+
+        $post->forceFill(['data2' => null]);
+        $this->assertNull($post->getAttributes()['data2']);
+        $this->assertNull($post->data2);
+
+        $post->forceFill(['data2' => [['a' => 1, 'b' => 2, 'c' => 3, 'd' => '4']]]);
+        $this->assertInstanceOf(SimpleMapper::class, $post->data2[0]);
+        $this->assertSame([['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4]], $post->data2->toArray());
+
+        $this->assertSame(['data2' => [['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4]]], $post->toArray());
+        $this->assertSame(['data2' => json_encode([['a' => '1', 'b' => 2, 'c' => '3', 'd' => 4]])], $post->getAttributes());
+    }
+
+    /**
+     * @return void
+     */
+    public function test_jsonb()
+    {
+        $this->assertSame(
+            [ ['a' => '2', 'aa' => '1'], ['a' => '4', 'aa' => '3'] ],
+            MapperCollectionJsonb::from([ ['aa' => 1, 'a' => 2], JsonMapper::from(['aa' => 3, 'a' => 4]) ])->toArray()
+        );
     }
 }

@@ -19,6 +19,7 @@ parameters:
         - '#Call to an undefined static#'
         - '#Method class\@anonymous\/tests\/ServiceTest.php\:12\:\:obtain\(\)#'
         - '#AnourValar\\LaravelAtom\\Tests\\Models\\Post\:\:\$data#'
+        - '#with return type void returns array\<int\, array\<int\, array\<int\|string\,#'
 
     excludePaths:
 
