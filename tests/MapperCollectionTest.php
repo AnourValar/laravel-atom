@@ -78,6 +78,7 @@ class MapperCollectionTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @return void
+     * @psalm-suppress NullReference
      */
     public function test_model()
     {

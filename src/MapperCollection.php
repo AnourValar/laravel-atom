@@ -4,7 +4,7 @@ namespace AnourValar\LaravelAtom;
 
 use Illuminate\Contracts\Database\Eloquent\Castable;
 
-abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayAccess, Castable
+abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayAccess, \Countable, Castable
 {
     use \AnourValar\LaravelAtom\Traits\EloquentCast;
 
@@ -45,12 +45,12 @@ abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayA
     /**
      * Create an object from the input
      *
-     * @param array|self $data
+     * @param array|object $data
      * @return static
      */
-    public static function from(array|self $data): static
+    public static function from(array|object $data): static
     {
-        if ($data instanceof self) {
+        if (is_object($data)) {
             $data = $data->toArray();
         }
 
@@ -182,5 +182,15 @@ abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayA
     public function offsetGet($offset): mixed
     {
         return $this->data[$offset];
+    }
+
+    /**
+     * @see \Countable
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->data);
     }
 }
