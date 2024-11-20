@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::connection(config('atom.locks.connection'))->create('locks', function (Blueprint $table) {
-            $table->string('sha1', 40)->unique();
+            $table->string('sha1')->unique();
             $table->timestamp('updated_at')->nullable()->index();
         });
     }
