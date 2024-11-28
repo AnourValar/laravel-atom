@@ -88,10 +88,10 @@ trait PostgresTrait
      *
      * @param string $tableName
      * @param string $columnName
-     * @param string $locale
+     * @param string|null $locale
      * @return void
      */
-    protected function addRumFullText(string $tableName, string $columnName = 'search_fulltext', string $locale = null): void
+    protected function addRumFullText(string $tableName, string $columnName = 'search_fulltext', ?string $locale = null): void
     {
         if (! $locale) {
             $locale = config('app.fulltext_locale', config('app.fallback_locale'));

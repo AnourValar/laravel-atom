@@ -16,7 +16,7 @@ class ExternalException extends Exception
      * @param array|null $dump
      * @return void
      */
-    public function __construct(string $action, array $dump = null)
+    public function __construct(string $action, ?array $dump = null)
     {
         parent::__construct("Unexpected behaviour for action {$action}.");
 

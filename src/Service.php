@@ -31,11 +31,11 @@ class Service
      * Setters
      *
      * @param \AnourValar\LaravelAtom\Registry $registry
-     * @param array $config
-     * @param callable $lockHook
+     * @param array|null $config
+     * @param callable|null $lockHook
      * @return void
      */
-    public function __construct(Registry $registry, array $config = null, callable $lockHook = null)
+    public function __construct(Registry $registry, ?array $config = null, ?callable $lockHook = null)
     {
         $this->registry = $registry;
 
@@ -113,10 +113,10 @@ class Service
      * Action after transaction commit
      *
      * @param callable $closure
-     * @param string $connection
+     * @param string|null $connection
      * @return int|null
      */
-    public function onCommit(callable $closure, string $connection = null): ?int
+    public function onCommit(callable $closure, ?string $connection = null): ?int
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
@@ -134,10 +134,10 @@ class Service
      * Action after transaction rollBack
      *
      * @param callable $closure
-     * @param string $connection
+     * @param string|null $connection
      * @return int|null
      */
-    public function onRollBack(callable $closure, string $connection = null): ?int
+    public function onRollBack(callable $closure, ?string $connection = null): ?int
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
@@ -154,10 +154,10 @@ class Service
      * Remove "onCommit" task
      *
      * @param int $key
-     * @param string $connection
+     * @param string|null $connection
      * @return void
      */
-    public function removeOnCommit(int $key, string $connection = null): void
+    public function removeOnCommit(int $key, ?string $connection = null): void
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
@@ -170,10 +170,10 @@ class Service
      * Remove "onRollBack" task
      *
      * @param int $key
-     * @param string $connection
+     * @param string|null $connection
      * @return void
      */
-    public function removeOnRollBack(int $key, string $connection = null): void
+    public function removeOnRollBack(int $key, ?string $connection = null): void
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
