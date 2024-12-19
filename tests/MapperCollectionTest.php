@@ -52,7 +52,7 @@ class MapperCollectionTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return void
+     * @return array
      */
     public static function provideSimpleData()
     {

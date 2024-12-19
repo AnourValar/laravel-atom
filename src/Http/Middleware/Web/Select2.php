@@ -43,6 +43,10 @@ class Select2
      */
     private function convertResponse(\Symfony\Component\HttpFoundation\Response &$response): void
     {
+        if ($response->getStatusCode() != 200) {
+            return;
+        }
+
         $content = $response->getOriginalContent();
 
         if (

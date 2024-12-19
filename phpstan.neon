@@ -4,7 +4,7 @@ parameters:
         - src
         - tests
 
-    # The level 9 is the highest level
+    # The level 10 is the highest level
     level: 5
 
     ignoreErrors:
@@ -17,15 +17,14 @@ parameters:
         - '#Call to an undefined method#'
         - '#If condition is always true#'
         - '#Call to an undefined static#'
-        - '#Method class\@anonymous\/tests\/ServiceTest.php\:12\:\:obtain\(\)#'
         - '#AnourValar\\LaravelAtom\\Tests\\Models\\Post\:\:\$data#'
-        - '#with return type void returns array\<int\, array\<int\, array\<int\|string\,#'
+        - '#is used zero times and#'
+        - '#should be covariant with return type \(int\<0\, max\>\) of method Countable\:\:count\(\)#'
 
     excludePaths:
 
     checkFunctionNameCase: true
     checkInternalClassCaseSensitivity: true
-    checkAlwaysTrueInstanceof: true
     reportMaybesInMethodSignatures: true
     reportStaticMethodSignatures: true
     checkUninitializedProperties: true
@@ -33,3 +32,6 @@ parameters:
     reportAlwaysTrueInLastCondition: true
     reportWrongPhpDocTypeInVarTag: true
     checkMissingCallableSignature: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+    reportAnyTypeWideningInVarTag: true
