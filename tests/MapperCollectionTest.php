@@ -11,9 +11,9 @@ use AnourValar\LaravelAtom\Tests\Models\Post;
 class MapperCollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider provideSimpleData
      * @return void
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideSimpleData')]
     public function test_simple(array $data)
     {
         $mapper = MapperCollectionSimple::from($data);
