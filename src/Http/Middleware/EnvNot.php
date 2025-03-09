@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Env
+class EnvNot
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class Env
      */
     public function handle(Request $request, Closure $next, ...$envs): Response
     {
-        if (! in_array(config('app.env'), $envs)) {
+        if (in_array(config('app.env'), $envs)) {
             throw new \Illuminate\Auth\Access\AuthorizationException();
         }
 

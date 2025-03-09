@@ -32,6 +32,12 @@
       <MissingTemplateParam errorLevel="suppress" />
       <UnsupportedPropertyReferenceUsage errorLevel="suppress" />
       <MissingOverrideAttribute errorLevel="suppress" />
+
+      <InvalidAttribute>
+        <errorLevel type="suppress">
+          <file name="tests/MapperCollectionTest.php" />
+        </errorLevel>
+      </InvalidAttribute>
     </issueHandlers>
 
     <forbiddenFunctions>
