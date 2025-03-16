@@ -195,10 +195,10 @@ class Service
                 return;
             }
 
+            $this->registry->pull('rollback', $connection);
             foreach ($this->registry->pull('commit', $connection) as $task) {
                 $task();
             }
-            $this->registry->pull('rollback', $connection);
         }
 
         if ($event instanceof TransactionRolledBack) {
@@ -206,10 +206,10 @@ class Service
                 return;
             }
 
+            $this->registry->pull('commit', $connection);
             foreach ($this->registry->pull('rollback', $connection) as $task) {
                 $task();
             }
-            $this->registry->pull('commit', $connection);
         }
     }
 
