@@ -25,7 +25,6 @@ class Locale
 
         if (in_array($locale, $supportedLocales)) {
             \App::setLocale($locale);
-            \Date::setLocale($locale);
         }
 
         return $next($request);
