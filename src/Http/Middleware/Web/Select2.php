@@ -67,8 +67,7 @@ class Select2
                         'text' => $key,
                         'children' => $items->transform(fn ($curr) => ['id' => $curr->getKey(), 'text' => $curr->{$this->defaultTextAttribute}]),
                     ];
-                })
-                ->values();
+                });
         }
 
         $collection = [];
