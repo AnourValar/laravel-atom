@@ -58,6 +58,19 @@ class Select2
             throw new \LogicException('Response type is not supported.');
         }
 
+        // Optgroup usage: $result->setCollection( $result->groupBy(fn ($item) => $item->client->title) );
+        if ($content->first() instanceof \Illuminate\Database\Eloquent\Collection) {
+            $content
+                ->getCollection()
+                ->transform(function ($items, $key) {
+                    return [
+                        'text' => $key,
+                        'children' => $items->transform(fn ($curr) => ['id' => $curr->getKey(), 'text' => $curr->{$this->defaultTextAttribute}]),
+                    ];
+                })
+                ->values();
+        }
+
         $collection = [];
         foreach ($content->getCollection() as $item) {
             if ($item instanceof \Illuminate\Database\Eloquent\Model) {
