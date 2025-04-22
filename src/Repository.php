@@ -2,6 +2,8 @@
 
 namespace AnourValar\LaravelAtom;
 
+use Carbon\CarbonInterface;
+
 abstract class Repository
 {
     /**
@@ -82,5 +84,86 @@ abstract class Repository
         unset($item);
 
         return $result;
+    }
+
+    /**
+     * Object to array conversion
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    protected function toArray($data)
+    {
+        if (is_object($data)) {
+            $data = (array) $data;
+        }
+
+        if (is_array($data)) {
+            $data = array_map(fn ($item) => $this->toArray($item), $data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Gap the missing dates with defaults
+     *
+     * @param array $data
+     * @param \Carbon\CarbonInterface $dateFrom
+     * @param \Carbon\CarbonInterface $dateTo
+     * @param array|callable $defaults
+     * @param string $format
+     * @return array
+     * @throws \RuntimeException
+     */
+    protected function gap(array $data, CarbonInterface $dateFrom, CarbonInterface $dateTo, array|callable $defaults, string $format = 'Y-m-d'): array
+    {
+        $result = [];
+
+        if (is_callable($defaults)) {
+            $defaults = $defaults();
+        }
+
+        $dateColumn = null;
+        $groupBy = [];
+        foreach ($defaults[0] as $key => $value) {
+            if (! isset($value)) {
+                $dateColumn = $key;
+            }
+
+            if (! in_array($value, [0, 0.0, '0', '0.0'], true)) {
+                $groupBy[] = $key;
+            }
+        }
+        if (! isset($dateColumn)) {
+            throw new \RuntimeException('Date attribute is not present.');
+        }
+
+        while ($dateFrom <= $dateTo) {
+            foreach ($defaults as $default) {
+                $default[$dateColumn] = $dateFrom->format($format);
+                $result[$this->getHash($default, $groupBy)] = $default;
+            }
+
+            $dateFrom = $dateFrom->addDay();
+        }
+
+        foreach ($data as $item) {
+            $item = (array) $item;
+            $result[$this->getHash($item, $groupBy)] = $item;
+        }
+
+        return array_values($result);
+    }
+
+    /**
+     * @param array $data
+     * @param array $groupBy
+     * @return string
+     */
+    private function getHash(array $data, array $groupBy): string
+    {
+        $data = array_intersect_key($data, array_fill_keys($groupBy, true));
+        return sha1(json_encode($data, JSON_UNESCAPED_UNICODE));
     }
 }
