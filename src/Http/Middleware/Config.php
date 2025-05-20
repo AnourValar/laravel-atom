@@ -6,19 +6,23 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnvNot
+class Config
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  array $envs
+     * @param  array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next, ...$envs): Response
+    public function handle(Request $request, Closure $next, ...$options): Response
     {
-        if (in_array(config('app.env'), $envs)) {
+        if (! isset($options[1])) {
+            throw new \RuntimeException('Incorrect usage.');
+        }
+
+        if (config($options[0]) != $options[1]) {
             throw new \Illuminate\Auth\Access\AuthorizationException();
         }
 
