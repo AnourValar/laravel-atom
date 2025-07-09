@@ -98,11 +98,25 @@ class Service
      */
     public function lock(): void
     {
-        $sha1 = sha1(serialize($this->canonizeArgs(func_get_args())));
+        $key = serialize($this->canonizeArgs(func_get_args()));
+        $sha1 = sha1($key);
         $connection = \DB::connection($this->config['locks']['connection']);
 
+        $microtime = microtime(true);
         $class = $this->config['locks']['strategies'][$this->config['locks']['strategy']];
         (new $class())->lock($sha1, $connection);
+        $microtime = microtime(true) - $microtime;
+
+        if (
+            $this->config['locks']['warning_wait_seconds']
+            && $microtime > $this->config['locks']['warning_wait_seconds']
+            && random_int(1, $this->config['locks']['warning_lottery'][1]) <= $this->config['locks']['warning_lottery'][0]
+        ) {
+            \Log::warning(
+                "Locking took over {$this->config['locks']['warning_wait_seconds']} second(s)",
+                ['key' => \Str::limit($key, 100), 'seconds' => round($microtime, 2)]
+            );
+        }
 
         if ($this->lockHook) {
             ($this->lockHook)($sha1, func_get_args());

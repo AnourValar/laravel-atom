@@ -12,6 +12,9 @@ return [
             'pessimistic_transaction' => AnourValar\LaravelAtom\Strategies\PessimisticTransactionStrategy::class, // @deprecated
             'optimistic_transaction' => AnourValar\LaravelAtom\Strategies\OptimisticTransactionStrategy::class, // @deprecated
         ],
+
+        'warning_wait_seconds' => 0.5,
+        'warning_lottery' => [25, 100],
     ],
 
     'number' => [
