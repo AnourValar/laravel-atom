@@ -61,8 +61,8 @@ class LaravelAtomServiceProvider extends ServiceProvider
     public function boot()
     {
         // config
-        $this->publishes([ __DIR__.'/../resources/config/atom.php' => config_path('atom.php')], 'config');
-        $this->publishes([ __DIR__.'/../resources/config/bindings.php' => config_path('bindings.php')], 'config');
+        $this->publishes([__DIR__.'/../resources/config/atom.php' => config_path('atom.php')], 'config');
+        $this->publishes([__DIR__.'/../resources/config/bindings.php' => config_path('bindings.php')], 'config');
 
         // langs
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravel-atom');

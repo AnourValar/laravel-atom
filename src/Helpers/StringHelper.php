@@ -58,28 +58,6 @@ class StringHelper
     }
 
     /**
-     * Generates a digital code
-     *
-     * @param int $length
-     * @param bool $debug
-     * @return string
-     */
-    public function generateCode(int $length, bool $debug = false): string
-    {
-        $code = '';
-
-        while (mb_strlen($code) < $length) {
-            if (config('app.debug') || $debug) {
-                $code .= '0';
-            } else {
-                $code .= random_int(0, 9);
-            }
-        }
-
-        return $code;
-    }
-
-    /**
      * Cleans tags and its innerhtml
      *
      * @param string|null $content
