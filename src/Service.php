@@ -228,6 +228,59 @@ class Service
     }
 
     /**
+     * Background process (for running in a command)
+     *
+     * @param callable $iteration
+     * @param int $sleepSeconds
+     * @param int $restartAfterSeconds
+     * @param bool $once
+     * @throws \AnourValar\LaravelAtom\Exceptions\InternalValidationException
+     */
+    public function daemon(callable $iteration, int $sleepSeconds = 10, int $restartAfterSeconds = 3600, bool $once = false): void
+    {
+        try {
+            $time = now()->timestamp;
+            $wokeUp = null;
+
+            while (now()->timestamp - $time < $restartAfterSeconds && ! app()->maintenanceMode()->active()) {
+                if (! $iteration($wokeUp)) {
+                    if ($once) {
+                        return;
+                    }
+
+                    $this->sleep($sleepSeconds);
+                    $wokeUp = true;
+                } else {
+                    $wokeUp = false;
+                }
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->sleep($sleepSeconds);
+            throw \AnourValar\LaravelAtom\Exceptions\InternalValidationException::fromValidationException($e);
+        } catch (\Throwable $e) {
+            $this->sleep($sleepSeconds);
+            throw $e;
+        }
+    }
+
+    /**
+     * @param int $seconds
+     * @return void
+     */
+    protected function sleep(int $seconds): void // \Sleep::fake(); \Sleep::assertSequence([Sleep::for(5)->seconds()]);
+    {
+        do {
+            $seconds -= 5;
+
+            if ($seconds >= 0) {
+                \Illuminate\Support\Sleep::for(5)->seconds();
+            } else {
+                \Illuminate\Support\Sleep::for(5 + $seconds)->seconds();
+            }
+        } while ($seconds > 0 && ! app()->maintenanceMode()->active());
+    }
+
+    /**
      * @param mixed $value
      * @return mixed
      * @throws \RuntimeException
