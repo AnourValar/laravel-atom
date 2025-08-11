@@ -234,6 +234,7 @@ class Service
      * @param int $sleepSeconds
      * @param int $restartAfterSeconds
      * @param bool $once
+     * @return void
      * @throws \AnourValar\LaravelAtom\Exceptions\InternalValidationException
      */
     public function daemon(callable $iteration, int $sleepSeconds = 10, int $restartAfterSeconds = 3600, bool $once = false): void
@@ -267,8 +268,10 @@ class Service
      * @param int $seconds
      * @return void
      */
-    protected function sleep(int $seconds): void // \Sleep::fake(); \Sleep::assertSequence([Sleep::for(5)->seconds()]);
+    protected function sleep(int $seconds): void
     {
+        // \Illuminate\Support\Sleep::fake();
+        // \Illuminate\Support\Sleep::assertSequence([\Illuminate\Support\Sleep::for(5)->seconds()]);
         do {
             $seconds -= 5;
 
