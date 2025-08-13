@@ -256,10 +256,14 @@ class Service
                 }
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->sleep($sleepSeconds);
+            if (! $once) {
+                $this->sleep($sleepSeconds);
+            }
             throw \AnourValar\LaravelAtom\Exceptions\InternalValidationException::fromValidationException($e);
         } catch (\Throwable $e) {
-            $this->sleep($sleepSeconds);
+            if (! $once) {
+                $this->sleep($sleepSeconds);
+            }
             throw $e;
         }
     }
