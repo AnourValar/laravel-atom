@@ -13,12 +13,12 @@ class IpWhitelist
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  array $ips
+     * @param  string $ipsConfig
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next, ...$ips): Response
+    public function handle(Request $request, Closure $next, $ipsConfig): Response
     {
-        if (! \Symfony\Component\HttpFoundation\IpUtils::checkIp($request->ip(), $ips)) {
+        if (! \Symfony\Component\HttpFoundation\IpUtils::checkIp($request->ip(), config($ipsConfig))) {
             throw new \Illuminate\Auth\AuthenticationException('Unauthenticated.');
         }
 
