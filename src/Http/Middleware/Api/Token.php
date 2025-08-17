@@ -20,7 +20,7 @@ class Token
      */
     public function handle(Request $request, Closure $next, string $tokenConfigHapth): Response
     {
-        $token = $request->headers->get($this->header);
+        $token = (string) $request->headers->get($this->header);
 
         if (mb_strlen($token) < 6 || ! in_array($token, (array) config($tokenConfigHapth), true)) {
             throw new \Illuminate\Auth\AuthenticationException('Unauthenticated.');
