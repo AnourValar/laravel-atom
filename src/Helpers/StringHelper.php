@@ -71,4 +71,30 @@ class StringHelper
 
         return preg_replace('#<\/?[a-z\d]+(>|\s[^>]*>)#iu', '', $content);
     }*/
+
+    /**
+     * Encrypt with a custom key
+     *
+     * @param mixed $decryptedData
+     * @param string $key
+     * @return string
+     */
+    public function encrypt($decryptedData, string $key): string // php artisan key:generate --show
+    {
+        $encrypter = new \Illuminate\Encryption\Encrypter(base64_decode($key), config('app.cipher'));
+        return $encrypter->encrypt($decryptedData);
+    }
+
+    /**
+     * Decrypt with a custom key
+     *
+     * @param string $encryptedData
+     * @param string $key
+     * @return mixed
+     */
+    public function decrypt(string $encryptedData, string $key)
+    {
+        $encrypter = new \Illuminate\Encryption\Encrypter(base64_decode($key), config('app.cipher'));
+        return $encrypter->decrypt($encryptedData);
+    }
 }
