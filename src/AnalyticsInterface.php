@@ -17,10 +17,10 @@ namespace AnourValar\LaravelAtom;
  *
  * $handler->authorize($request->user(), $data);
  *
- * return \Cache::tags($handler->cacheTag($request->user(), $data))->remember(
- *     implode(' / ', [__METHOD__, $type, $request->user()->id, config('app.timezone_client'), sha1(json_encode($data))]),
+ * return \Cache::tags($handler->cacheTag($data))->remember(
+ *     implode(' / ', [__METHOD__, $type, config('app.timezone_client'), sha1(json_encode($data))]),
  *     15 * 60, // 15 minutes
- *     fn () => $handler->getData($request->user(), $data)
+ *     fn () => $handler->getData($data)
  * );
  *
  */
@@ -28,7 +28,7 @@ namespace AnourValar\LaravelAtom;
 interface AnalyticsInterface
 {
     /**
-     * Request validation
+     * Request validation. User could be added: $validator->setValue('user_id', $user?->id)
      *
      * @param \Illuminate\Foundation\Auth\User|null $user
      * @param \Illuminate\Validation\Validator $validator
@@ -49,18 +49,16 @@ interface AnalyticsInterface
     /**
      * Cache tag
      *
-     * @param \Illuminate\Foundation\Auth\User|null $user
      * @param array $data
      * @return string|null
      */
-    public function cacheTag(?\Illuminate\Foundation\Auth\User $user, array $data): ?string; // 'user:' . $user->id
+    public function cacheTag(array $data): ?string; // 'user:' . $data['user_id']
 
     /**
      * Analytics data
      *
-     * @param \Illuminate\Foundation\Auth\User|null $user
      * @param array $data
      * @return array
      */
-    public function getData(?\Illuminate\Foundation\Auth\User $user, array $data): array;
+    public function getData(array $data): array;
 }
