@@ -43,6 +43,10 @@ trait OptimizeCheckerTrait
                 return;
             }
 
+            if (stripos($sql, ' "migrations" ')) {
+                return;
+            }
+
             $sql = preg_replace('|\s+limit\s+\d+\s*$|iu', '', $sql);
 
             foreach (\DB::select("EXPLAIN {$sql}", $query->bindings) as $item) {
