@@ -2,7 +2,7 @@
 
 namespace AnourValar\LaravelAtom\Tests;
 
-class ServiceTest extends \PHPUnit\Framework\TestCase
+class ServiceTest extends \Orchestra\Testbench\TestCase
 {
     /**
      * @return void
@@ -22,8 +22,8 @@ class ServiceTest extends \PHPUnit\Framework\TestCase
         );
 
         $this->assertSame(
-            [ ['a' => '1', 'b' => true, 'c' => false, 'd' => '0', 'e' => ' ', 'f' => '3', 'g' => '2.5', 'h' => ''] ],
-            $class->obtain(['a' => 1, 'b' => true, 'c' => false, 'd' => 0, 'e' => ' ', 'f' => '3', 'g' => 2.5, 'h' => ''])
+            [ ['a' => '1', 'b' => '1', 'c' => '0', 'd' => '0', 'e' => '', 'f' => '3', 'g' => '2.5', 'h' => '', 'i' => '5', 'j' => '5.5'] ],
+            $class->obtain(['a' => 1, 'b' => true, 'c' => false, 'd' => 0, 'e' => ' ', 'f' => '3', 'g' => 2.5, 'h' => '', 'i' => 5, 'j' => '5.5'])
         );
 
         $this->assertSame(

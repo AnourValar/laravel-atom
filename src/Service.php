@@ -305,8 +305,20 @@ class Service
             unset($item);
         }
 
-        if (is_integer($value) || is_float($value)) {
+        if (is_string($value)) {
+            $value = trim($value);
+        }
+
+        if (is_integer($value) || is_double($value)) {
             $value = (string) $value;
+        }
+
+        if ($value === true) {
+            $value = '1';
+        }
+
+        if ($value === false) {
+            $value = '0';
         }
 
         return $value;
