@@ -5,7 +5,7 @@ namespace AnourValar\LaravelAtom\Helpers;
 class NumberHelper
 {
     /**
-     * Normalize
+     * Encode to integer
      *
      * @param int|float|null $amount
      * @return int|null
@@ -20,7 +20,7 @@ class NumberHelper
     }
 
     /**
-     * Format (for display)
+     * Decode to float
      *
      * @param null|int|float $amount
      * @return float|null
@@ -33,6 +33,22 @@ class NumberHelper
 
         $multiple = config('atom.number.multiple');
         return round($amount / $multiple, (mb_strlen($multiple) - 1));
+    }
+
+    /**
+     * Decode to string
+     *
+     * @param null|int|float $amount
+     * @return string|null
+     */
+    public function formatMultiple(null|int|float $amount): string|null
+    {
+        if (! isset($amount)) {
+            return null;
+        }
+
+        $multiple = config('atom.number.multiple');
+        return rtrim(rtrim(number_format($this->decodeMultiple($amount), (mb_strlen($multiple) - 1), '.', ''), '0'), '.');
     }
 
     /**
