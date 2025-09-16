@@ -56,9 +56,14 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 }
             }
 
-            if (is_array($value) && ! $param->getType() instanceof \ReflectionUnionType && is_subclass_of($param->getType()->getName(), self::class)) {
-                $class = $param->getType()->getName();
-                $value = $class::from($value);
+            if (isset($value) && ! $param->getType() instanceof \ReflectionUnionType && $type = $param->getType()) {
+                $class = $type->getName();
+
+                if (is_subclass_of($class, self::class)) {
+                    $value = $class::from($value);
+                } elseif (is_a($class, \Carbon\CarbonInterface::class, true)) {
+                    $value = \Date::parse($value);
+                }
             }
 
             if (! $value instanceof \AnourValar\LaravelAtom\Mapper\Optional) {

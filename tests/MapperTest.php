@@ -7,6 +7,8 @@ use AnourValar\LaravelAtom\Mapper\Mapping;
 use AnourValar\LaravelAtom\Mapper\MappingSnakeCase;
 use AnourValar\LaravelAtom\Tests\Mappers\SimpleMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ComplexMapper;
+use AnourValar\LaravelAtom\Tests\Mappers\DateMapper;
+use AnourValar\LaravelAtom\Tests\Mappers\DatesMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\NestedMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ModeMapper;
 use AnourValar\LaravelAtom\Tests\Mappers\ArrayOfMapper;
@@ -128,6 +130,27 @@ class MapperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame(
             [],
             NestedMapper::from([])->toArray()
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function test_date()
+    {
+        $this->assertSame(
+            ['a' => '2025-09-16 12:00:00', 'b' => null],
+            DateMapper::from(['a' => '2025-09-16 12:00:00'])->toArray()
+        );
+
+        $this->assertSame(
+            ['a' => '2025-09-16 12:00:00', 'b' => '2025-09-16 13:00:00'],
+            DateMapper::from(['a' => \Date::parse('2025-09-16 12:00:00'), 'b' => '2025-09-16 13:00:00'])->toArray()
+        );
+
+        $this->assertSame(
+            ['dates' => ['a' => '2025-09-16 12:00:00', 'b' => '2025-09-16 13:00:00']],
+            DatesMapper::from(['dates' => ['a' => \Date::parse('2025-09-16 12:00:00'), 'b' => '2025-09-16 13:00:00']])->toArray()
         );
     }
 
