@@ -18,6 +18,7 @@ class LayoutHelper
         if (is_string($menu)) {
             $menu = config($menu);
         }
+        ksort($menu);
 
         foreach ($menu as $key => &$value) {
             // title
