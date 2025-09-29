@@ -20,4 +20,18 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame(true, $helper->decrypt($helper->encrypt(true, $key2), $key2));
         $this->assertSame(false, $helper->decrypt($helper->encrypt(false, $key2), $key2));
     }
+
+    /**
+     * @return void
+     */
+    public function test_encrypt_decrypt_binary()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertSame('foo', $helper->decryptBinary($helper->encryptBinary('foo')));
+        $this->assertSame('bar', $helper->decryptBinary($helper->encryptBinary('bar')));
+        $this->assertSame('2', $helper->decryptBinary($helper->encryptBinary(2)));
+        $this->assertSame('3.14', $helper->decryptBinary($helper->encryptBinary(3.14)));
+        $this->assertSame('', $helper->decryptBinary($helper->encryptBinary(null)));
+    }
 }

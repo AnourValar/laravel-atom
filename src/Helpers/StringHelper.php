@@ -79,7 +79,7 @@ class StringHelper
      * @param string $key
      * @return string
      */
-    public function encrypt($decryptedData, string $key): string // php artisan key:generate --show
+    public function encrypt($decryptedData, string $key): string // php artisan key:generate --show -> without "base64:"
     {
         $encrypter = new \Illuminate\Encryption\Encrypter(base64_decode($key), config('app.cipher'));
         return $encrypter->encrypt($decryptedData);
@@ -96,5 +96,74 @@ class StringHelper
     {
         $encrypter = new \Illuminate\Encryption\Encrypter(base64_decode($key), config('app.cipher'));
         return $encrypter->decrypt($encryptedData);
+    }
+
+    /**
+     * Encrypt binary
+     *
+     * @param mixed $decryptedValue
+     * @param string|null $key
+     * @return string
+     */
+    public function encryptBinary($decryptedValue, ?string $key = null): string
+    {
+        if (! $key) {
+            $key = config('app.key');
+            if (\Str::startsWith($key, 'base64:')) {
+                $key = substr($key, 7);
+            }
+        }
+
+        $iv = random_bytes(openssl_cipher_iv_length(strtolower(config('app.cipher'))));
+        $decryptedValue = \openssl_encrypt(
+            $decryptedValue,
+            strtolower(config('app.cipher')),
+            base64_decode($key),
+            OPENSSL_RAW_DATA,
+            $iv,
+            $tag
+        );
+
+        if ($decryptedValue === false || $tag) {
+            throw new \RuntimeException('Could not encrypt the data.');
+        }
+
+        return $iv.$decryptedValue;
+    }
+
+    /**
+     * Decrypt binary
+     *
+     * @param string $encryptedData
+     * @param string|null $key
+     * @return string
+     */
+    public function decryptBinary(string $encryptedData, ?string $key = null): string
+    {
+        if (! $key) {
+            $key = config('app.key');
+            if (\Str::startsWith($key, 'base64:')) {
+                $key = substr($key, 7);
+            }
+        }
+
+        $ivLength = openssl_cipher_iv_length(strtolower(config('app.cipher')));
+        $iv = substr($encryptedData, 0, $ivLength);
+        $encryptedData = substr($encryptedData, $ivLength);
+
+        $encryptedData = \openssl_decrypt(
+            $encryptedData,
+            strtolower(config('app.cipher')),
+            base64_decode($key),
+            OPENSSL_RAW_DATA,
+            $iv,
+            ''
+        );
+
+        if ($encryptedData === false) {
+            throw new \RuntimeException('Could not decrypt the data.');
+        }
+
+        return $encryptedData;
     }
 }
