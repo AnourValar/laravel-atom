@@ -13,7 +13,7 @@ namespace AnourValar\LaravelAtom;
  *
  * $validator = \Validator::make($request->input(), []);
  * $handler->validate($request->user(), $validator);
- * $data = $validator->validate();
+ * $data = $validator->stopOnFirstFailure()->validate();
  *
  * $handler->authorize($request->user(), $data);
  *
