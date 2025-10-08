@@ -170,7 +170,7 @@ abstract class Repository
 
         foreach ($data as $item) {
             $key = '';
-            foreach ((array) $groupBy as $curr) {
+            foreach ($groupBy as $curr) {
                 $key .= $item[$curr].'#';
             }
 
@@ -179,7 +179,7 @@ abstract class Repository
                 $result[$key][$curr] += $item[$curr];
             }
 
-            foreach ((array) $groupBy as $curr) {
+            foreach ($groupBy as $curr) {
                 $result[$key][$curr] = $item[$curr];
             }
         }
