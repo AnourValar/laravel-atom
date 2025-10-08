@@ -157,6 +157,45 @@ abstract class Repository
     }
 
     /**
+     * Ungroup part of aggregations
+     *
+     * @param array $data
+     * @param array $groupBy
+     * @param array $aggregations
+     * @return array
+     */
+    protected function ungroup(array $data, array $groupBy = [], array $aggregations = ['qty']): array
+    {
+        $result = [];
+
+        foreach ($data as $item) {
+            $key = '';
+            foreach ((array) $groupBy as $curr) {
+                $key .= $item[$curr].'#';
+            }
+
+            foreach ($aggregations as $curr) {
+                $result[$key][$curr] ??= 0;
+                $result[$key][$curr] += $item[$curr];
+            }
+
+            foreach ((array) $groupBy as $curr) {
+                $result[$key][$curr] = $item[$curr];
+            }
+        }
+
+        if (! $result) {
+            return $result;
+        }
+
+        if (! $groupBy) {
+            return $result[''];
+        }
+
+        return array_values($result);
+    }
+
+    /**
      * @param array $data
      * @param array $groupBy
      * @return string
