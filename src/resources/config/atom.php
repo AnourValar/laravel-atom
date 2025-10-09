@@ -18,6 +18,6 @@ return [
     ],
 
     'number' => [
-        'multiple' => 100,
+        'multiple' => 100, // 10000000000
     ],
 ];
