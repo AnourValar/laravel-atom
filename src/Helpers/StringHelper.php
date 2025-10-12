@@ -77,12 +77,13 @@ class StringHelper
      *
      * @param mixed $decryptedData
      * @param string $key
+     * @param bool $serialize
      * @return string
      */
-    public function encrypt($decryptedData, string $key): string // php artisan key:generate --show -> without "base64:"
+    public function encrypt($decryptedData, string $key, bool $serialize = true): string // php artisan key:generate --show -> without "base64:"
     {
         $encrypter = new \Illuminate\Encryption\Encrypter(base64_decode($key), config('app.cipher'));
-        return $encrypter->encrypt($decryptedData);
+        return $encrypter->encrypt($decryptedData, $serialize);
     }
 
     /**
@@ -90,12 +91,13 @@ class StringHelper
      *
      * @param string $encryptedData
      * @param string $key
+     * @param bool $unserialize
      * @return mixed
      */
-    public function decrypt(string $encryptedData, string $key)
+    public function decrypt(string $encryptedData, string $key, bool $unserialize = true)
     {
         $encrypter = new \Illuminate\Encryption\Encrypter(base64_decode($key), config('app.cipher'));
-        return $encrypter->decrypt($encryptedData);
+        return $encrypter->decrypt($encryptedData, $unserialize);
     }
 
     /**

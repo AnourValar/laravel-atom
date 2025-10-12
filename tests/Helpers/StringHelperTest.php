@@ -19,6 +19,9 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame(3.14, $helper->decrypt($helper->encrypt(3.14, $key2), $key2));
         $this->assertSame(true, $helper->decrypt($helper->encrypt(true, $key2), $key2));
         $this->assertSame(false, $helper->decrypt($helper->encrypt(false, $key2), $key2));
+
+        $this->assertSame('foo', $helper->decrypt($helper->encrypt('foo', $key1, false), $key1, false));
+        $this->assertSame('2', $helper->decrypt($helper->encrypt(2, $key1, false), $key1, false));
     }
 
     /**
