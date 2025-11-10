@@ -45,5 +45,32 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('1400', $helper->formatMultiple(14000000000000));
         $this->assertSame('14000', $helper->formatMultiple(140000000000000));
         $this->assertSame('140000', $helper->formatMultiple(1400000000000000));
+
+        $this->assertSame('92233720368547758062132.1321332133', $helper->formatMultiple('922337203685477580621321321332133'));
+    }
+    /**
+     * @return void
+     */
+    public function test_encodeMultiple()
+    {
+        config(['atom.number.multiple' => 10000000000]);
+        $helper = new \AnourValar\LaravelAtom\Helpers\NumberHelper();
+
+        $this->assertSame(null, $helper->encodeMultiple(null));
+        $this->assertSame(23456789098765432, $helper->encodeMultiple(2345678.9098765432));
+        $this->assertSame(23456789098765432, $helper->encodeMultiple('2345678.9098765432'));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_decodeMultiple()
+    {
+        config(['atom.number.multiple' => 10000000000]);
+        $helper = new \AnourValar\LaravelAtom\Helpers\NumberHelper();
+
+        $this->assertSame(null, $helper->decodeMultiple(null));
+        $this->assertSame(2345678.9098765432, $helper->decodeMultiple(23456789098765432));
+        $this->assertSame(2345678.9098765432, $helper->decodeMultiple('23456789098765432'));
     }
 }
