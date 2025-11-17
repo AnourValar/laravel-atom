@@ -13,13 +13,17 @@ class ExternalException extends Exception
 
     /**
      * @param string $action
-     * @param array|null $dump
+     * @param array|null|\AnourValar\HttpClient\Response $dump
      * @return void
+     * @psalm-suppress UndefinedClass
      */
-    public function __construct(string $action, ?array $dump = null)
+    public function __construct(string $action, array|null|\AnourValar\HttpClient\Response $dump = null)
     {
         parent::__construct("Unexpected behaviour for action {$action}.");
 
+        if ($dump instanceof \AnourValar\HttpClient\Response) {
+            $dump = $dump->dump(true);
+        }
         $this->dump = $dump;
     }
 
@@ -30,7 +34,9 @@ class ExternalException extends Exception
      */
     public function report()
     {
-        \Log::info($this->getMessage(), $this->dump ?? []);
+        if (mb_substr_count($this->getMessage(), 'Unexpected behaviour for action ') < 2) {
+            \Log::info($this->getMessage(), $this->dump ?? []);
+        }
     }
 
     /**

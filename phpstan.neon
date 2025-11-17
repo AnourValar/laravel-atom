@@ -21,6 +21,7 @@ parameters:
         - '#AnourValar\\LaravelAtom\\Tests\\Models\\Post\:\:\$data#'
         - '#is used zero times and#'
         - '#should be covariant with return type \(int\<0\, max\>\) of method Countable\:\:count\(\)#'
+        - '#AnourValar\\HttpClient\\Response#'
 
     excludePaths:
 
