@@ -2,6 +2,7 @@
 
 namespace AnourValar\LaravelAtom;
 
+use Illuminate\Database\Events\TransactionCommitting;
 use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Database\Events\TransactionRolledBack;
 
@@ -128,9 +129,10 @@ class Service
      *
      * @param callable $closure
      * @param string|null $connection
-     * @return int|null
+     * @param string|null $uniqueName
+     * @return int|string|null
      */
-    public function onCommit(callable $closure, ?string $connection = null): ?int
+    public function beforeCommit(callable $closure, ?string $connection = null, ?string $uniqueName = null): int|string|null
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
@@ -141,7 +143,29 @@ class Service
             return null;
         }
 
-        return $this->registry->push('commit', $connection, $closure);
+        return $this->registry->push('before_commit', $connection, $closure, $uniqueName);
+    }
+
+    /**
+     * Action after transaction commit
+     *
+     * @param callable $closure
+     * @param string|null $connection
+     * @param string|null $uniqueName
+     * @return int|string|null
+     */
+    public function onCommit(callable $closure, ?string $connection = null, ?string $uniqueName = null): int|string|null
+    {
+        if (is_null($connection)) {
+            $connection = \DB::getDefaultConnection();
+        }
+
+        if ($this->shouldCommit($connection)) {
+            $closure();
+            return null;
+        }
+
+        return $this->registry->push('commit', $connection, $closure, $uniqueName);
     }
 
     /**
@@ -149,9 +173,10 @@ class Service
      *
      * @param callable $closure
      * @param string|null $connection
-     * @return int|null
+     * @param string|null $uniqueName
+     * @return int|string|null
      */
-    public function onRollBack(callable $closure, ?string $connection = null): ?int
+    public function onRollBack(callable $closure, ?string $connection = null, ?string $uniqueName = null): int|string|null
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
@@ -161,39 +186,24 @@ class Service
             return null;
         }
 
-        return $this->registry->push('rollback', $connection, $closure);
+        return $this->registry->push('rollback', $connection, $closure, $uniqueName);
     }
 
     /**
-     * Remove "onCommit" task
+     * Remove event task
      *
-     * @param int $key
+     * @param string $event
+     * @param int|string $key
      * @param string|null $connection
      * @return void
      */
-    public function removeOnCommit(int $key, ?string $connection = null): void
+    public function removeEvent(string $event, int|string $key, ?string $connection = null): void
     {
         if (is_null($connection)) {
             $connection = \DB::getDefaultConnection();
         }
 
-        $this->registry->remove('commit', $connection, $key);
-    }
-
-    /**
-     * Remove "onRollBack" task
-     *
-     * @param int $key
-     * @param string|null $connection
-     * @return void
-     */
-    public function removeOnRollBack(int $key, ?string $connection = null): void
-    {
-        if (is_null($connection)) {
-            $connection = \DB::getDefaultConnection();
-        }
-
-        $this->registry->remove('rollback', $connection, $key);
+        $this->registry->remove($event, $connection, $key);
     }
 
     /**
@@ -203,6 +213,16 @@ class Service
     public function triggerTransaction($event)
     {
         $connection = $event->connectionName;
+
+        if ($event instanceof TransactionCommitting) {
+            if (! $this->shouldCommit($connection, 1)) {
+                return;
+            }
+
+            foreach ($this->registry->pull('before_commit', $connection) as $task) {
+                $task();
+            }
+        }
 
         if ($event instanceof TransactionCommitted) {
             if (! $this->shouldCommit($connection)) {
@@ -326,11 +346,12 @@ class Service
 
     /**
      * @param mixed $connection
+     * @param int $sub
      * @return bool
      */
-    protected function shouldCommit($connection)
+    protected function shouldCommit($connection, int $sub = 0)
     {
-        return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel));
+        return (! (\DB::connection($connection)->transactionLevel() - $this->transactionZeroLevel - $sub));
     }
 
     /**
