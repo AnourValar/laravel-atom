@@ -125,7 +125,7 @@ class Service
     }
 
     /**
-     * Action after transaction commit
+     * Action before transaction commit
      *
      * @param callable $closure
      * @param string|null $connection
