@@ -326,7 +326,7 @@ class Service
         }
 
         if (is_string($value)) {
-            $value = trim($value);
+            $value = trim(mb_strtolower($value));
         }
 
         if (is_integer($value) || is_double($value)) {
