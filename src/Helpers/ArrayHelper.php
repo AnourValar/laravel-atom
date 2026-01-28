@@ -276,6 +276,59 @@ class ArrayHelper
     }
 
     /**
+     * Replaces markers in the scheme recursively
+     *
+     * @param array $schema
+     * @param array $data
+     * @return array
+     */
+    public function applyDataToSchema(array $schema, array $data): array
+    {
+        return $this->replaceDataToSchema($schema, \Arr::dot($data));
+    }
+
+    /**
+     * @param array $schema
+     * @param array $params
+     * @return array
+     */
+    protected function replaceDataToSchema(array $schema, array $params): array
+    {
+        foreach ($schema as $key => &$item) {
+            $shouldBeDeleted = false;
+
+            if (is_array($item) && $item) {
+                $item = $this->replaceDataToSchema($item, $params);
+
+                if (! $item) {
+                    $shouldBeDeleted = true;
+                }
+            }
+
+            if (is_string($item)) {
+                $item = preg_replace_callback(
+                    '#([\%\$])([a-z\_\d\.]+)(\1)#ui',
+                    function ($patterns) use ($params, &$shouldBeDeleted) {
+                        if ($patterns[1] == '$' && ! isset($params[$patterns[2]])) {
+                            $shouldBeDeleted = true;
+                        }
+
+                        return $params[$patterns[2]] ?? '';
+                    },
+                    $item
+                );
+            }
+
+            if ($shouldBeDeleted) {
+                unset($schema[$key]);
+            }
+        }
+        unset($item);
+
+        return $schema;
+    }
+
+    /**
      * @param array $array
      * @return bool
      */
