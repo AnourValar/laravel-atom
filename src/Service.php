@@ -5,6 +5,7 @@ namespace AnourValar\LaravelAtom;
 use Illuminate\Database\Events\TransactionCommitting;
 use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Database\Events\TransactionRolledBack;
+use Illuminate\Support\Facades\Redis;
 
 class Service
 {
@@ -286,6 +287,43 @@ class Service
             }
             throw $e;
         }
+    }
+
+    /**
+     * Push item to the exchanger
+     *
+     * @param string $key
+     * @param mixed $item
+     * @param int $expiredSeconds
+     */
+    public function exchangerPush(string $key, $item, int $expiredSeconds = 86400): void
+    {
+        Redis::eval(
+            "redis.call('RPUSH', KEYS[1], ARGV[1]);
+             redis.call('EXPIRE', KEYS[1], ARGV[2]);
+             return true;",
+            1,
+            $key,
+            $item,
+            $expiredSeconds // TTL
+        );
+    }
+
+    /**
+     * Pull all items from the exchanger
+     *
+     * @param string $key
+     * @return array
+     */
+    public function exchangerPull(string $key): array
+    {
+        return Redis::eval(
+            "local v = redis.call('LRANGE', KEYS[1], 0, -1);
+             redis.call('DEL', KEYS[1]);
+             return v;",
+            1,
+            $key
+        );
     }
 
     /**
