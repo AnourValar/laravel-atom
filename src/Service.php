@@ -304,7 +304,7 @@ class Service
              return true;",
             1,
             $key,
-            $item,
+            serialize($item),
             $expiredSeconds // TTL
         );
     }
@@ -317,13 +317,20 @@ class Service
      */
     public function exchangerPull(string $key): array
     {
-        return Redis::eval(
+        $result = Redis::eval(
             "local v = redis.call('LRANGE', KEYS[1], 0, -1);
              redis.call('DEL', KEYS[1]);
              return v;",
             1,
             $key
         );
+
+        foreach ($result as &$item) {
+            $item = unserialize($item);
+        }
+        unset($item);
+
+        return $result;
     }
 
     /**
