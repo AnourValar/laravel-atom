@@ -307,7 +307,7 @@ class ArrayHelper
 
             if (is_string($item)) {
                 $item = preg_replace_callback(
-                    '#([\%\$])([a-z\_\d\.]+)(\1)#ui',
+                    '#([\%\$])([a-z\_\d\.\@]+)(\1)#ui',
                     function ($patterns) use ($params, &$shouldBeDeleted) {
                         if ($patterns[1] == '$' && ! isset($params[$patterns[2]])) {
                             $shouldBeDeleted = true;

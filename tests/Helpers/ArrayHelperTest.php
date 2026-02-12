@@ -85,10 +85,10 @@ class ArrayHelperTest extends \Orchestra\Testbench\TestCase
     {
         $service = \App::make(\AnourValar\LaravelAtom\Helpers\ArrayHelper::class);
         $schema = [
-            '1' => '%foo% %a.b.c% %bar%',
+            '1' => '%foo% %a.b.c% %b@r%',
             '2' => ['%foo% %a.b.c%'],
 
-            '3' => [['%a.b.c% %bar%']],
+            '3' => [['%a.b.c% %b@r%']],
         ];
 
         $this->assertSame(
@@ -98,7 +98,7 @@ class ArrayHelperTest extends \Orchestra\Testbench\TestCase
 
                 '3' => [['ABC BAR']],
             ],
-            $service->applyDataToSchema($schema, ['foo' => 'FOO', 'bar' => 'BAR', 'a' => ['b' => ['c' => 'ABC']]])
+            $service->applyDataToSchema($schema, ['foo' => 'FOO', 'b@r' => 'BAR', 'a' => ['b' => ['c' => 'ABC']]])
         );
 
         $this->assertSame(
