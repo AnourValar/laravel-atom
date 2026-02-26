@@ -2,30 +2,7 @@
 
 namespace AnourValar\LaravelAtom;
 
-/**
- * Controller example:
- *
- * $type = $request->route('type');
- * if (! config("entities.analytics.type.{$type}")) {
- *     abort(404);
- * }
- * $handler = \App::make(config("entities.analytics.type.{$type}.bind"));
- *
- * $validator = \Validator::make($request->input(), []);
- * $handler->validate($request->user(), $validator);
- * $data = $validator->stopOnFirstFailure()->validate();
- *
- * $handler->authorize($request->user(), $data);
- *
- * return \Cache::tags($handler->cacheTag($data))->remember(
- *     implode(' / ', [__METHOD__, $type, config('app.timezone_client'), sha1(json_encode($data))]),
- *     15 * 60, // 15 minutes
- *     fn () => $handler->getData($data)
- * );
- *
- */
-
-interface AnalyticsInterface
+interface AnalyticsInterface // @see \AnourValar\LaravelAtom\Http\AnalyticsTrait
 {
     /**
      * Request validation. User could be added: $validator->setValue('user_id', $user?->id)
