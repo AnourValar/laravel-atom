@@ -7,12 +7,12 @@ trait AnalyticsTrait
     /**
      * Retrieve analytics
      *
-     * @param int $cacheMinutes
+     * @param int $cacheSeconds
      * @param string $configPath
      * @return array
      * @throws \RuntimeException
      */
-    public function retrieveAnalytics(int $cacheMinutes = 15, string $configPath = 'entities.analytics.type'): array
+    public function retrieveAnalytics(int $cacheSeconds = 15 * 60, string $configPath = 'entities.analytics.type'): array
     {
         // Identify
         $type = \Request::route('type');
@@ -36,7 +36,7 @@ trait AnalyticsTrait
         // Get the response
         $response = \Cache::tags($handler->cacheTag($request))->remember(
             implode(' / ', [__METHOD__, $type, config('app.timezone_client'), sha1(json_encode($request))]),
-            $cacheMinutes * 60,
+            $cacheSeconds,
             fn () => $handler->getData($request)
         );
 
