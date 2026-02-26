@@ -168,4 +168,36 @@ class StringHelper
 
         return $encryptedData;
     }
+
+    /**
+     * Mask value (secret)
+     *
+     * @param string|null $value
+     * @param string|null $separator
+     * @return string|null
+     */
+    public function mask(?string $value, ?string $separator = null): ?string
+    {
+        if (! isset($value) || $value === '') {
+            return $value;
+        }
+
+        if (isset($separator)) {
+            $value = explode($separator, $value, 2);
+            if (isset($value[1])) {
+                $value[1] = $separator . $value[1];
+            }
+        } else {
+            $value = [$value];
+        }
+        $value[1] ??= '';
+
+        $strlen = mb_strlen($value[0]);
+
+        return match (true) {
+            $strlen < 3 => preg_replace('#^(.)#u', '*', $value[0]),
+            $strlen < 6 => preg_replace('#(?<=.{1}).(?=.{1})#u', '*', $value[0]),
+            default => preg_replace('#(?<=.{2}).(?=.{2})#u', '*', $value[0]),
+        } . $value[1];
+    }
 }

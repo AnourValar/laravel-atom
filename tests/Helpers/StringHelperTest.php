@@ -37,4 +37,38 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('3.14', $helper->decryptBinary($helper->encryptBinary(3.14)));
         $this->assertSame('', $helper->decryptBinary($helper->encryptBinary(null)));
     }
+
+    /**
+     * @return void
+     */
+    public function test_mask()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertNull($helper->mask(null));
+        $this->assertSame('', $helper->mask(''));
+        $this->assertSame('*', $helper->mask('f'));
+        $this->assertSame('*o', $helper->mask('fo'));
+        $this->assertSame('f*o', $helper->mask('foo'));
+        $this->assertSame('f**o', $helper->mask('fooo'));
+        $this->assertSame('f***o', $helper->mask('foooo'));
+        $this->assertSame('fo**ar', $helper->mask('foobar'));
+        $this->assertSame('fo***r1', $helper->mask('foobar1'));
+        $this->assertSame('fo****12', $helper->mask('foobar12'));
+        $this->assertSame('fo*****23', $helper->mask('foobar123'));
+
+        $this->assertSame('fo*****23', $helper->mask('foobar123', '@'));
+
+        $this->assertNull($helper->mask(null, '@'));
+        $this->assertSame('', $helper->mask('', '@'));
+        $this->assertSame('*@example.org', $helper->mask('f@example.org', '@'));
+        $this->assertSame('*o@example.org', $helper->mask('fo@example.org', '@'));
+        $this->assertSame('f*o@example.org', $helper->mask('foo@example.org', '@'));
+        $this->assertSame('f**o@example.org', $helper->mask('fooo@example.org', '@'));
+        $this->assertSame('f***o@example.org', $helper->mask('foooo@example.org', '@'));
+        $this->assertSame('fo**ar@example.org', $helper->mask('foobar@example.org', '@'));
+        $this->assertSame('fo***r1@example.org', $helper->mask('foobar1@example.org', '@'));
+        $this->assertSame('fo****12@example.org', $helper->mask('foobar12@example.org', '@'));
+        $this->assertSame('fo*****23@example.org', $helper->mask('foobar123@example.org', '@'));
+    }
 }
