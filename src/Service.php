@@ -100,7 +100,7 @@ class Service
      */
     public function lock(): void
     {
-        $key = serialize($this->canonizeArgs(func_get_args()));
+        $key = $this->normalizeKey(func_get_args(), true, false);
         $sha1 = sha1($key);
         $connection = \DB::connection($this->config['locks']['connection']);
 
@@ -353,19 +353,23 @@ class Service
     }
 
     /**
+     * Normalize for hash
+     *
      * @param mixed $value
+     * @param bool $encodeToJson
+     * @param bool $nullTolerance
      * @return mixed
      * @throws \RuntimeException
      */
-    protected function canonizeArgs($value)
+    public function normalizeKey($value, bool $encodeToJson = true, bool $nullTolerance = true)
     {
-        if ($value === null && ! \App::isProduction()) {
+        if (! $nullTolerance && $value === null && ! \App::isProduction()) {
             throw new \RuntimeException('Null lock.');
         }
 
         if (is_array($value)) {
             foreach ($value as &$item) {
-                $item = $this->canonizeArgs($item);
+                $item = $this->normalizeKey($item, false, $nullTolerance);
             }
             unset($item);
         }
@@ -378,12 +382,20 @@ class Service
             $value = (string) $value;
         }
 
+        if ($value === null) {
+            $value = '';
+        }
+
         if ($value === true) {
             $value = '1';
         }
 
         if ($value === false) {
             $value = '0';
+        }
+
+        if ($encodeToJson) {
+            $value = json_encode($value, JSON_UNESCAPED_UNICODE);
         }
 
         return $value;

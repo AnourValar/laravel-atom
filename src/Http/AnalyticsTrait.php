@@ -27,7 +27,7 @@ trait AnalyticsTrait
         }
 
         // Validate
-        $validator = \Validator::make(array_replace(\Request::input(), $request), []);
+        $validator = \Validator::make(array_replace(['page' => 1, 'per_page' => 20], \Request::input(), $request), []);
         $handler->validate(\Request::user(), $validator);
         $request = $validator->stopOnFirstFailure()->validate();
 
@@ -36,7 +36,7 @@ trait AnalyticsTrait
 
         // Get the response
         $response = \Cache::tags($handler->cacheTag($request))->remember(
-            implode(' / ', [__METHOD__, $type, config('app.timezone_client'), sha1(json_encode($request))]),
+            implode(' / ', [__METHOD__, $type, config('app.timezone_client'), sha1(\Atom::normalizeKey($request))]),
             $cacheSeconds,
             fn () => $handler->getData($request)
         );
