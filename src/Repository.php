@@ -196,6 +196,47 @@ abstract class Repository
     }
 
     /**
+     * Simple paginate (pre-calculate)
+     *
+     * @param int $perPage
+     * @param int $page
+     * @return array
+     * @throws \RuntimeException
+     */
+    protected function calculateSimplePaginate(int $perPage, int $page): array
+    {
+        if ($page < 1 || $perPage < 1) {
+            throw new \RuntimeException('Incorrect usage.');
+        }
+
+        return [
+            'limit' => $perPage + 1,
+            'offset' => ($page - 1) * $perPage,
+        ];
+    }
+
+    /**
+     * Simple paginate (wrap)
+     *
+     * @param mixed $data
+     * @param int $perPage
+     * @param int $page
+     * @return \Illuminate\Pagination\Paginator
+     */
+    protected function simplePaginate($data, int $perPage, int $page): \Illuminate\Pagination\Paginator
+    {
+        return new \Illuminate\Pagination\Paginator(
+            $data,
+            $perPage,
+            $page,
+            [
+                'path' => request()->url(),
+                'query' => request()->query(),
+            ]
+        );
+    }
+
+    /**
      * @param array $data
      * @param array $groupBy
      * @return string

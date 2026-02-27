@@ -35,7 +35,7 @@ interface AnalyticsInterface // @see \AnourValar\LaravelAtom\Http\AnalyticsTrait
      * Analytics data
      *
      * @param array $data
-     * @return array
+     * @return iterable
      */
-    public function getData(array $data): array;
+    public function getData(array $data): iterable;
 }

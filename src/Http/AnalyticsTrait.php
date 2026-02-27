@@ -7,12 +7,13 @@ trait AnalyticsTrait
     /**
      * Retrieve analytics
      *
+     * @param array $request
      * @param int $cacheSeconds
      * @param string $configPath
      * @return array
      * @throws \RuntimeException
      */
-    public function retrieveAnalytics(int $cacheSeconds = 15 * 60, string $configPath = 'entities.analytics.type'): array
+    public function retrieveAnalytics(array $request = [], int $cacheSeconds = 15 * 60, string $configPath = 'entities.analytics.type'): array
     {
         // Identify
         $type = \Request::route('type');
@@ -26,7 +27,7 @@ trait AnalyticsTrait
         }
 
         // Validate
-        $validator = \Validator::make(\Request::input(), []);
+        $validator = \Validator::make(array_replace(\Request::input(), $request), []);
         $handler->validate(\Request::user(), $validator);
         $request = $validator->stopOnFirstFailure()->validate();
 
