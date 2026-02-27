@@ -47,6 +47,7 @@ class ServiceTest extends \Orchestra\Testbench\TestCase
             $service->normalizeKey([[[' ', '', null, 1, 0, 2.0, 3.14, '4.14', true, false, []]]], false)
         );
 
+        $service->normalizeKey(null, true, true);
         $this->expectException(\RuntimeException::class);
         $service->normalizeKey(null, true, false);
     }
