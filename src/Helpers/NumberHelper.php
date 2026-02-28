@@ -104,7 +104,6 @@ class NumberHelper
         return [$decPoint, $thousandsSep];
     }
 
-
     /**
      * BC Math "number_format"
      *
