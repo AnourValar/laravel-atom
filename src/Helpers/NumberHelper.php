@@ -5,43 +5,45 @@ namespace AnourValar\LaravelAtom\Helpers;
 class NumberHelper
 {
     /**
-     * Encode to integer
+     * Encode to multiple
      *
-     * @param int|float|null $amount
-     * @return int|null
+     * @param string|int|float|null $amount
+     * @return string|null
      */
-    public function encodeMultiple(int|float|null $amount): ?int
+    public function encodeMultiple(string|int|float|null $amount): ?string
     {
         if (is_null($amount)) {
             return null;
         }
 
-        return round(round($amount * config('atom.number.multiple'), 1));
+        return bcmul($amount, config('atom.number.multiple'));
     }
 
     /**
-     * Decode to float
+     * Decode from multiple
      *
-     * @param null|int|float $amount
-     * @return float|null
+     * @param string|int|null $amount
+     * @return string|null
      */
-    public function decodeMultiple(null|int|float $amount): float|null
+    public function decodeMultiple(string|int|null $amount): ?string
     {
         if (! isset($amount)) {
             return null;
         }
 
         $multiple = config('atom.number.multiple');
-        return round($amount / $multiple, (mb_strlen($multiple) - 1));
+        return rtrim(rtrim(bcdiv($amount, $multiple, (mb_strlen($multiple) - 1)), '0'), '.');
     }
 
     /**
-     * Decode to string
+     * Decode multiple & format
      *
-     * @param null|int|float|string $amount
+     * @param string|int|float|null $amount
+     * @param string|null $locale
+     * @param bool $trim
      * @return string|null
      */
-    public function formatMultiple(null|int|float|string $amount): string|null
+    public function formatMultiple(string|int|float|null $amount, ?string $locale = null, bool $trim = true): ?string
     {
         if (! isset($amount)) {
             return null;
@@ -49,12 +51,62 @@ class NumberHelper
 
         $multiple = config('atom.number.multiple');
         $amount = bcdiv($amount, $multiple, (mb_strlen($multiple) - 1));
+        [$decPoint, $thousandsSep] = $this->numberDelimiters($locale);
 
-        return rtrim(rtrim($this->numberFormat($amount, (mb_strlen($multiple) - 1), '.', ''), '0'), '.');
+        $amount = $this->numberFormat($amount, (mb_strlen($multiple) - 1), $decPoint, $thousandsSep);
+        if ($trim) {
+            $amount = rtrim(rtrim($amount, '0'), $decPoint);
+        }
+
+        return $amount;
     }
 
     /**
-     * BC Math fiendly "number_format"
+     * Format number
+     *
+     * @param string|int|float|null $number
+     * @param int $precision
+     * @param string|null $locale
+     * @param bool $trim
+     * @return string|null
+     */
+    public function formatNumber(string|int|float|null $number, int $precision = 2, ?string $locale = null, bool $trim = true): ?string
+    {
+        if (! isset($number)) {
+            return null;
+        }
+
+        [$decPoint, $thousandsSep] = $this->numberDelimiters($locale);
+
+        $amount = $this->numberFormat($number, $precision, $decPoint, $thousandsSep);
+        if ($trim) {
+            $amount = rtrim(rtrim($amount, '0'), $decPoint);
+        }
+
+        if ($amount === '') {
+            return '0';
+        }
+
+        return $amount;
+    }
+
+    /**
+     * @param string|null $locale
+     * @return array
+     */
+    protected function numberDelimiters(?string $locale): array
+    {
+        $formatter = new \NumberFormatter($locale ?? config('app.locale'), \NumberFormatter::DECIMAL);
+
+        $decPoint = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+        $thousandsSep = $formatter->getSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL);
+
+        return [$decPoint, $thousandsSep];
+    }
+
+
+    /**
+     * BC Math "number_format"
      *
      * @param string $number
      * @param int $decimals
@@ -62,7 +114,7 @@ class NumberHelper
      * @param string $thousandsSep
      * @return string
      */
-    public function numberFormat(string $number, int $decimals = 0, string $decPoint = '.', string $thousandsSep = ','): string
+    protected function numberFormat(string $number, int $decimals = 0, string $decPoint = '.', string $thousandsSep = ','): string
     {
         if ($number === '') {
             return '';
@@ -87,8 +139,9 @@ class NumberHelper
         }
 
         $intPartReversed = strrev($intPart);
-        $intFormatted = implode($thousandsSep, str_split($intPartReversed, 3));
+        $intFormatted = implode('@', str_split($intPartReversed, 3));
         $intFormatted = strrev($intFormatted);
+        $intFormatted = str_replace('@', $thousandsSep, $intFormatted); // utf friendly
 
         return $sign . $intFormatted . ($decimals > 0 ? $decPoint . $fracPart : '');
     }

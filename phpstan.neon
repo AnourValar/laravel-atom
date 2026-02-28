@@ -10,7 +10,7 @@ parameters:
     ignoreErrors:
         - '#Call to static method#'
         - '#Unsafe usage of new static\(\)#'
-        - '#Method AnourValar\\LaravelAtom\\Helpers\\NumberHelper\:\:encodeMultiple\(\) should return int\|null but returns float#'
+        - '#NumberHelperTest\:\:getPackageProviders\(\) should be covariant with return type#'
         - '#number\_format expects float\, string given#'
         - '#Result of method AnourValar\\LaravelAtom\\Service\:\:lock\(\) \(void\) is used\.#'
         - '#Parameter \#1 \$a#'
