@@ -137,6 +137,7 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame(1.234567891, $helper->decodeMultiple(12345678910, 'float'));
         $this->assertSame(1, $helper->decodeMultiple(10000000000, 'integer'));
         $this->assertSame(1, $helper->decodeMultiple('12345678910', 'integer'));
+        $this->assertNull($helper->decodeMultiple(null, 'integer'));
     }
 
     /**
