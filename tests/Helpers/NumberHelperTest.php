@@ -223,6 +223,74 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
     }
 
     /**
+     * @return void
+     */
+    public function test_encodeMultiple_2()
+    {
+        $numberHelper = new \AnourValar\LaravelAtom\Helpers\NumberHelper();
+
+        $this->assertNull($numberHelper->encodeMultiple(null));
+
+        $this->assertSame('0', $numberHelper->encodeMultiple(0));
+        $this->assertSame('100', $numberHelper->encodeMultiple(1));
+        $this->assertSame('150', $numberHelper->encodeMultiple(1.5));
+        $this->assertSame('105', $numberHelper->encodeMultiple(1.05));
+        $this->assertSame('100', $numberHelper->encodeMultiple(1.005));
+        $this->assertSame('100', $numberHelper->encodeMultiple(1.0005));
+        $this->assertSame('100', $numberHelper->encodeMultiple(1.00005));
+        $this->assertSame('100', $numberHelper->encodeMultiple(1.000005));
+        $this->assertSame('2000', $numberHelper->encodeMultiple(20));
+
+        $this->assertSame('0', $numberHelper->encodeMultiple('0'));
+        $this->assertSame('100', $numberHelper->encodeMultiple('1'));
+        $this->assertSame('150', $numberHelper->encodeMultiple('1.5'));
+        $this->assertSame('105', $numberHelper->encodeMultiple('1.05'));
+        $this->assertSame('100', $numberHelper->encodeMultiple('1.005'));
+        $this->assertSame('100', $numberHelper->encodeMultiple('1.0005'));
+        $this->assertSame('100', $numberHelper->encodeMultiple('1.00005'));
+        $this->assertSame('100', $numberHelper->encodeMultiple('1.000005'));
+        $this->assertSame('2000', $numberHelper->encodeMultiple('20'));
+
+        $this->assertSame('120', $numberHelper->encodeMultiple(1.2));
+        $this->assertSame('102', $numberHelper->encodeMultiple(1.02));
+        $this->assertSame('103', $numberHelper->encodeMultiple(1.029999999999999999));
+
+        $this->assertSame('6061141900', $numberHelper->encodeMultiple(60611419));
+
+        $this->assertSame('60611419', $numberHelper->encodeMultiple(606114.19));
+        $this->assertSame('60611419', $numberHelper->encodeMultiple(606114.1900000000000001));
+        $this->assertSame('60611420', $numberHelper->encodeMultiple(606114.1999999999999999));
+
+        $this->assertSame('606114.19', $numberHelper->decodeMultiple($numberHelper->encodeMultiple(606114.19)));
+        $this->assertSame('60611419', $numberHelper->decodeMultiple($numberHelper->encodeMultiple(60611419)));
+
+        $this->assertSame('0.16', $numberHelper->decodeMultiple(150 / 9));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_decodeMultiple_2()
+    {
+        $numberHelper = new \AnourValar\LaravelAtom\Helpers\NumberHelper();
+
+        $this->assertNull($numberHelper->decodeMultiple(null));
+
+        $this->assertSame('0', $numberHelper->decodeMultiple(0));
+        $this->assertSame('0', $numberHelper->decodeMultiple(0.006));
+        $this->assertSame('1', $numberHelper->decodeMultiple(100));
+        $this->assertSame('1.5', $numberHelper->decodeMultiple(150));
+        $this->assertSame('1.05', $numberHelper->decodeMultiple(105));
+        $this->assertSame('1.01', $numberHelper->decodeMultiple(101));
+        $this->assertSame('20', $numberHelper->decodeMultiple(2000));
+
+        $this->assertSame('606114.19', $numberHelper->decodeMultiple(60611419));
+        $this->assertSame('606114.2', $numberHelper->decodeMultiple(60611420));
+
+        $this->assertSame('60611419', $numberHelper->encodeMultiple($numberHelper->decodeMultiple(60611419)));
+    }
+
+    /**
      * @param \Illuminate\Foundation\Application $app
      * @return array
      */
