@@ -267,8 +267,18 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('6061141900', $numberHelper->encodeMultiple(60611419));
 
         $this->assertSame('60611419', $numberHelper->encodeMultiple(606114.19));
-        $this->assertSame('60611419', $numberHelper->encodeMultiple(606114.1900000000000001));
-        $this->assertSame('60611420', $numberHelper->encodeMultiple(606114.1999999999999999));
+        $this->assertSame('60611419', $numberHelper->encodeMultiple(606114.19000001));
+        $this->assertSame('60611419', $numberHelper->encodeMultiple(606114.19999999));
+        $this->assertSame('60611419', $numberHelper->encodeMultiple('606114.19'));
+        $this->assertSame('60611419', $numberHelper->encodeMultiple('606114.1900000000000001'));
+        $this->assertSame('60611419', $numberHelper->encodeMultiple('606114.1999999999999999'));
+
+        $this->assertSame('-60611419', $numberHelper->encodeMultiple(-606114.19));
+        $this->assertSame('-60611419', $numberHelper->encodeMultiple(-606114.19000001));
+        $this->assertSame('-60611419', $numberHelper->encodeMultiple(-606114.19999999));
+        $this->assertSame('-60611419', $numberHelper->encodeMultiple('-606114.19'));
+        $this->assertSame('-60611419', $numberHelper->encodeMultiple('-606114.1900000000000001'));
+        $this->assertSame('-60611419', $numberHelper->encodeMultiple('-606114.1999999999999999'));
 
         $this->assertSame('606114.19', $numberHelper->decodeMultiple($numberHelper->encodeMultiple(606114.19)));
         $this->assertSame('60611419', $numberHelper->decodeMultiple($numberHelper->encodeMultiple(60611419)));
