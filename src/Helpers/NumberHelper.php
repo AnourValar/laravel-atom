@@ -5,7 +5,7 @@ namespace AnourValar\LaravelAtom\Helpers;
 class NumberHelper
 {
     /**
-     * Encode to multiple
+     * Encode to multiple | bcmath ~10 times slower
      *
      * @param string|int|float|null $amount
      * @return string|null
@@ -20,19 +20,26 @@ class NumberHelper
     }
 
     /**
-     * Decode from multiple
+     * Decode from multiple | bcmath ~10 times slower
      *
      * @param string|int|null $amount
-     * @return string|null
+     * @param string|null $cast
+     * @return string|int|float|null
      */
-    public function decodeMultiple(string|int|null $amount): ?string
+    public function decodeMultiple(string|int|null $amount, ?string $cast = null): string|int|float|null
     {
         if (! isset($amount)) {
             return null;
         }
 
         $multiple = config('atom.number.multiple');
-        return rtrim(rtrim(bcdiv($amount, $multiple, (mb_strlen($multiple) - 1)), '0'), '.');
+        $amount = rtrim(rtrim(bcdiv($amount, $multiple, (mb_strlen($multiple) - 1)), '0'), '.');
+
+        if ($cast) {
+            settype($amount, $cast);
+        }
+
+        return $amount;
     }
 
     /**
