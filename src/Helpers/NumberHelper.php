@@ -8,15 +8,22 @@ class NumberHelper
      * Encode to multiple | bcmath ~10 times slower
      *
      * @param string|int|float|null $amount
-     * @return string|null
+     * @param string|null $cast
+     * @return string|int|null
      */
-    public function encodeMultiple(string|int|float|null $amount): ?string
+    public function encodeMultiple(string|int|float|null $amount, ?string $cast = null): string|int|null
     {
         if (is_null($amount)) {
             return null;
         }
 
-        return bcmul($amount, config('atom.number.multiple'));
+        $amount = bcmul($amount, config('atom.number.multiple'));
+
+        if ($cast) {
+            settype($amount, $cast);
+        }
+
+        return $amount;
     }
 
     /**
