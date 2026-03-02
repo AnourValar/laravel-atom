@@ -56,7 +56,19 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 }
             }
 
-            if (isset($value) && ! $param->getType() instanceof \ReflectionUnionType && $type = $param->getType()) {
+            $type = $param->getType();
+            if ($param->getType() instanceof \ReflectionUnionType) {
+                $types = [];
+                foreach ($param->getType()->getTypes() as $item) {
+                    if ($item->getName() != \AnourValar\LaravelAtom\Mapper\Optional::class) {
+                        $types[] = $item;
+                    }
+                }
+
+                $type = count($types) == 1 ? $types[0] : null;
+            }
+
+            if (isset($value) && $type) {
                 $class = $type->getName();
 
                 if (is_subclass_of($class, self::class)) {

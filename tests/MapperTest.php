@@ -240,6 +240,16 @@ class MapperTest extends \Orchestra\Testbench\TestCase
                 'b' => [['a' => 1, 'b' => 2], SimpleMapper::from(['a' => 3, 'b' => 4, 'c' => 5, 'd' => 6]), new SimpleMapper(7, 8)],
             ])->toArray()
         );
+
+        // Etc
+        $this->assertSame(
+            [
+                'dates' => ['a' => '2026-03-02 16:00:00', 'b' => null],
+            ],
+            DatesMapper::from([
+                'dates' => ['a' => \Date::parse('2026-03-02 16:00:00')],
+            ])->toArray()
+        );
     }
 
     /**
