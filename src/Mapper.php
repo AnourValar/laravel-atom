@@ -68,7 +68,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 $type = count($types) == 1 ? $types[0] : null;
             }
 
-            if (isset($value) && $type) {
+            if (isset($value) && ! $value instanceof \AnourValar\LaravelAtom\Mapper\Optional && $type) {
                 $class = $type->getName();
 
                 if (is_subclass_of($class, self::class)) {

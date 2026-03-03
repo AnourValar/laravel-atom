@@ -250,6 +250,12 @@ class MapperTest extends \Orchestra\Testbench\TestCase
                 'dates' => ['a' => \Date::parse('2026-03-02 16:00:00')],
             ])->toArray()
         );
+
+        // Etc
+        $this->assertSame(
+            [],
+            DatesMapper::from([])->toArray()
+        );
     }
 
     /**
