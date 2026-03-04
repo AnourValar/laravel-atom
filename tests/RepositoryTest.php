@@ -167,4 +167,60 @@ class RepositoryTest extends \PHPUnit\Framework\TestCase
             )
         );
     }
+
+    /**
+     * @return void
+     */
+    public function test_conditions()
+    {
+        $class = new class () extends \AnourValar\LaravelAtom\Repository {
+            public function proxy(): array
+            {
+                return parent::conditions(...func_get_args());
+            }
+        };
+
+        $this->assertSame(
+            ['sql' => '', 'bindings' => []],
+            $class->proxy()
+        );
+
+        $this->assertSame(
+            ['sql' => '', 'bindings' => []],
+            $class->proxy([0 => fn () => 1])
+        );
+
+        $this->assertSame(
+            ['sql' => '', 'bindings' => []],
+            $class->proxy([0 => fn () => 1], [false => fn () => 2])
+        );
+
+        $this->assertSame(
+            ['sql' => '', 'bindings' => []],
+            $class->proxy([0 => fn () => 1], [false => fn () => 2], ['' => fn () => 3])
+        );
+
+
+        $this->assertSame(
+            ['sql' => 'AND a = :a', 'bindings' => ['a' => 'foo']],
+            $class->proxy([1 => fn () => ['a = :a', ['a' => 'foo']]])
+        );
+
+        $this->assertSame(
+            ['sql' => 'AND a IN (:a, :b, :c)', 'bindings' => ['a' => 'foo', 'b' => 'bar', 'c' => 'baz']],
+            $class->proxy([1 => fn () => ['a IN (:a, :b, :c)', ['a' => 'foo', 'b' => 'bar', 'c' => 'baz']]])
+        );
+
+
+
+        $this->assertSame(
+            ['sql' => 'AND a = 1 AND c = 3', 'bindings' => []],
+            $class->proxy([1 => fn () => 'a = 1'], [0 => fn () => 'b = 2'], [true => fn () => ['c = 3']])
+        );
+
+        $this->assertSame(
+            ['sql' => 'AND a = 1 AND c = 3 AND e = 5', 'bindings' => []],
+            $class->proxy([1 => fn () => 'a = 1'], [0 => fn () => 'b = 2'], [true => fn () => 'c = 3'], [false => fn () => 'd = 4'], ['1' => fn () => 'e = 5'])
+        );
+    }
 }

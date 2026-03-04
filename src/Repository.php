@@ -237,6 +237,42 @@ abstract class Repository
     }
 
     /**
+     * Generate SQL for where / having statements
+     *
+     * @return array
+     */
+    protected function conditions(): array
+    {
+        $result = ['sql' => [], 'bindings' => []];
+
+        foreach (func_get_args() as $item) {
+            $condition = array_key_first($item);
+            $closure = $item[$condition];
+
+            if (! $condition) {
+                continue;
+            }
+
+            $curr = $closure();
+            if (! is_array($curr)) {
+                $curr = [$curr];
+            }
+
+            $result['sql'][] = $curr[0];
+            $result['bindings'] = array_merge($result['bindings'], ($curr[1] ?? []));
+        }
+
+        if (! count($result['sql'])) {
+            return ['sql' => '', 'bindings' => []];
+        }
+
+        return [
+            'sql' => 'AND ' . implode(' AND ', $result['sql']),
+            'bindings' => $result['bindings'],
+        ];
+    }
+
+    /**
      * @param array $data
      * @param array $groupBy
      * @return string
