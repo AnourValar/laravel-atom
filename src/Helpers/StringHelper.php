@@ -200,4 +200,60 @@ class StringHelper
             default => preg_replace('#(?<=.{2}).(?=.{2})#u', '*', $value[0]),
         } . $value[1];
     }
+
+    /**
+     * Name (full)
+     *
+     * @param string|null $lastName
+     * @param string|null $firstName
+     * @param string|null $middleName
+     * @return string|null
+     */
+    public function nameFull(?string $lastName, ?string $firstName, ?string $middleName = null): ?string
+    {
+        if (! $lastName && ! $firstName) {
+            return null;
+        }
+
+        if (! $lastName) {
+            return $firstName . ($middleName ? ' ' . $middleName : '');
+        }
+
+        if (! $firstName) {
+            return $lastName;
+        }
+
+        return $lastName . ' ' . $firstName . ($middleName ? ' ' . $middleName : '');
+    }
+
+    /**
+     * Name (short)
+     *
+     * @param string|null $lastName
+     * @param string|null $firstName
+     * @param string|null $middleName
+     * @return string|null
+     */
+    public function nameShort(?string $lastName, ?string $firstName, ?string $middleName = null): ?string
+    {
+        if (! $lastName && ! $firstName) {
+            return null;
+        }
+
+        if (! $lastName) {
+            return $firstName;
+        }
+
+        if (! $firstName) {
+            return $lastName;
+        }
+
+        $result = $lastName . ' ' . mb_substr($firstName, 0, 1) . '.';
+
+        if ($middleName) {
+            $result .= mb_substr($middleName, 0, 1) . '.';
+        }
+
+        return $result;
+    }
 }

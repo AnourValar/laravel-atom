@@ -71,4 +71,38 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('fo****12@example.org', $helper->mask('foobar12@example.org', '@'));
         $this->assertSame('fo*****23@example.org', $helper->mask('foobar123@example.org', '@'));
     }
+
+    /**
+     * @return void
+     */
+    public function test_name_full()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertSame(null, $helper->nameFull(null, null, null));
+        $this->assertSame(null, $helper->nameFull(null, null, 'Петрович'));
+        $this->assertSame('Василий', $helper->nameFull(null, 'Василий', null));
+        $this->assertSame('Василий Петрович', $helper->nameFull(null, 'Василий', 'Петрович'));
+        $this->assertSame('Иванов', $helper->nameFull('Иванов', null, null));
+        $this->assertSame('Иванов', $helper->nameFull('Иванов', null, 'Петрович'));
+        $this->assertSame('Иванов Василий', $helper->nameFull('Иванов', 'Василий', null));
+        $this->assertSame('Иванов Василий Петрович', $helper->nameFull('Иванов', 'Василий', 'Петрович'));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_name_short()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertSame(null, $helper->nameShort(null, null, null));
+        $this->assertSame(null, $helper->nameShort(null, null, 'Петрович'));
+        $this->assertSame('Василий', $helper->nameShort(null, 'Василий', null));
+        $this->assertSame('Василий', $helper->nameShort(null, 'Василий', 'Петрович'));
+        $this->assertSame('Иванов', $helper->nameShort('Иванов', null, null));
+        $this->assertSame('Иванов', $helper->nameShort('Иванов', null, 'Петрович'));
+        $this->assertSame('Иванов В.', $helper->nameShort('Иванов', 'Василий', null));
+        $this->assertSame('Иванов В.П.', $helper->nameShort('Иванов', 'Василий', 'Петрович'));
+    }
 }
