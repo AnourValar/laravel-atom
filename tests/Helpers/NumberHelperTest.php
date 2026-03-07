@@ -154,7 +154,11 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
 
         $this->assertNull($helper->formatMultiple(null));
         $this->assertSame('0', $helper->formatMultiple(''));
-        $this->assertSame('1,000.0000000000', $helper->formatMultiple(10000000000000, 'en', false));
+        $this->assertSame('1,000.0000000000', $helper->formatMultiple(10000000000000, null, false, 'en'));
+        $this->assertSame('1,234.5678901234', $helper->formatMultiple(12345678901234, null, false, 'en'));
+        $this->assertSame('1,234.5678901234', $helper->formatMultiple(12345678901234, null, true, 'en'));
+        $this->assertSame('1,234.56', $helper->formatMultiple(12345678901234, 2, false, 'en'));
+        $this->assertSame('1,234.56', $helper->formatMultiple(12345678901234, 2, true, 'en'));
 
         $this->assertSame('0', $helper->formatMultiple(0));
         $this->assertSame('0.0000000001', $helper->formatMultiple(1));
@@ -216,9 +220,11 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
 
         $this->assertNull($helper->formatNumber(null));
         $this->assertSame('0', $helper->formatNumber(''));
-        $this->assertSame('1,000', $helper->formatNumber(1000, 0, null, false));
-        $this->assertSame('1,000.0', $helper->formatNumber(1000, 1, null, false));
-        $this->assertSame('1,000.00', $helper->formatNumber(1000, 2, null, false));
+        $this->assertSame('1,000', $helper->formatNumber(1000, 0, false));
+        $this->assertSame('1,000.0', $helper->formatNumber(1000, 1, false));
+        $this->assertSame('1,000.00', $helper->formatNumber(1000, 2, false));
+        $this->assertSame('1,234.56', $helper->formatNumber(1234.56, 2, false));
+        $this->assertSame('1,234.5', $helper->formatNumber(1234.56, 1, false));
 
         $this->assertSame('0', $helper->formatNumber(0));
         $this->assertSame('0', $helper->formatNumber(0.0));

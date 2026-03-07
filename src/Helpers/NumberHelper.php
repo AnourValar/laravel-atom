@@ -57,7 +57,7 @@ class NumberHelper
      * @param bool $trim
      * @return string|null
      */
-    public function formatMultiple(string|int|float|null $amount, ?string $locale = null, bool $trim = true): ?string
+    public function formatMultiple(string|int|float|null $amount, ?int $precision = null, bool $trim = true, ?string $locale = null): ?string
     {
         if (! isset($amount)) {
             return null;
@@ -67,7 +67,7 @@ class NumberHelper
         $amount = bcdiv($amount, $multiple, (mb_strlen($multiple) - 1));
         [$decPoint, $thousandsSep] = $this->numberDelimiters($locale);
 
-        $amount = $this->numberFormat($amount, (mb_strlen($multiple) - 1), $decPoint, $thousandsSep);
+        $amount = $this->numberFormat($amount, ($precision ?? (mb_strlen($multiple) - 1)), $decPoint, $thousandsSep);
         if ($trim) {
             $amount = rtrim(rtrim($amount, '0'), $decPoint);
         }
@@ -84,7 +84,7 @@ class NumberHelper
      * @param bool $trim
      * @return string|null
      */
-    public function formatNumber(string|int|float|null $number, int $precision = 2, ?string $locale = null, bool $trim = true): ?string
+    public function formatNumber(string|int|float|null $number, int $precision = 2, bool $trim = true, ?string $locale = null): ?string
     {
         if (! isset($number)) {
             return null;
