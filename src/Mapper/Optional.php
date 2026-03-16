@@ -13,4 +13,14 @@ class Optional
     {
         return [];
     }
+
+    /**
+     * Condition helper
+     *
+     * @return bool
+     */
+    public function exists(): bool
+    {
+        return false;
+    }
 }

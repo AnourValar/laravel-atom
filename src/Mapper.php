@@ -130,6 +130,16 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
     }
 
     /**
+     * Condition helper
+     *
+     * @return bool
+     */
+    public function exists(): bool
+    {
+        return true;
+    }
+
+    /**
      * Get data (filtered)
      *
      * @param array|string $keys

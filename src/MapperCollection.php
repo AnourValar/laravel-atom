@@ -80,6 +80,16 @@ abstract class MapperCollection implements \Iterator, \JsonSerializable, \ArrayA
     }
 
     /**
+     * Condition helper
+     *
+     * @return bool
+     */
+    public function exists(): bool
+    {
+        return true;
+    }
+
+    /**
      * @see \JsonSerializable
      *
      * @return array
