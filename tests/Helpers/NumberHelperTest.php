@@ -71,6 +71,9 @@ class NumberHelperTest extends \Orchestra\Testbench\TestCase
 
         $this->assertNull($helper->encodeMultiple(null, 'integer'));
         $this->assertSame(23456789098765000, $helper->encodeMultiple(2345678.9098765, 'integer'));
+
+        $this->assertSame('20300', $helper->encodeMultiple('2.03E-6'));
+        $this->assertSame('20300', $helper->encodeMultiple(2.03E-6));
     }
 
     /**

@@ -17,7 +17,11 @@ class NumberHelper
             return null;
         }
 
-        $amount = bcmul($amount, config('atom.number.multiple'));
+        if (stripos((string) $amount, 'e') !== false) {
+            $amount = bcmul($amount * config('atom.number.multiple'), '1');
+        } else {
+            $amount = bcmul($amount, config('atom.number.multiple'));
+        }
 
         if ($cast) {
             settype($amount, $cast);
