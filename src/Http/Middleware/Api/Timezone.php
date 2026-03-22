@@ -8,9 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Timezone
 {
+    /**
+     * Config
+     *
+     * @var string
+     */
     protected $header = 'X-Timezone';
-
-    protected $config = 'app.timezone_client';
 
     /**
      * Handle an incoming request.
@@ -24,7 +27,7 @@ class Timezone
         $timezone = mb_substr((string) $request->header($this->header), 0, 100);
 
         if (in_array($timezone, timezone_identifiers_list(\DateTimeZone::ALL_WITH_BC))) {
-            config([$this->config => $timezone]);
+            config(['atom.timezone_client' => $timezone]);
         }
 
         return $next($request);

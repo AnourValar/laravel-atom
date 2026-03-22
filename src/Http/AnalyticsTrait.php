@@ -36,7 +36,7 @@ trait AnalyticsTrait
 
         // Get the response
         $response = \Cache::tags($handler->cacheTag($request))->remember(
-            implode(' / ', [__METHOD__, $type, config('app.timezone_client'), sha1(\Atom::normalizeKey($request))]),
+            implode(' / ', [__METHOD__, $type, config('atom.timezone_client'), sha1(\Atom::normalizeKey($request))]),
             $cacheSeconds,
             fn () => $handler->getData($request)
         );

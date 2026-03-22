@@ -9,11 +9,15 @@ class StringHelper
      *
      * @param string $phone
      * @param bool $withPlus
-     * @return string
+     * @return string|null
      */
-    public function canonizePhone(?string $phone, bool $withPlus = false): string
+    public function canonizePhone(?string $phone, bool $withPlus = false): ?string
     {
-        $phone = preg_replace('|[^\d]|u', '', (string) $phone);
+        if (! isset($phone)) {
+            return null;
+        }
+
+        $phone = preg_replace('|[^\d]|u', '', trim($phone));
         $phone = preg_replace('|^8([^5]\d{9})$|', '7$1', $phone); // internal alias
 
         if ($withPlus) {
@@ -31,8 +35,8 @@ class StringHelper
      */
     public function formatPhone(?string $phone): ?string
     {
-        if (! $phone) {
-            return $phone;
+        if (! isset($phone)) {
+            return null;
         }
 
         if (mb_strlen($phone) == 11) {
@@ -50,8 +54,8 @@ class StringHelper
      */
     public function canonizeEmail(?string $email): ?string
     {
-        if (! $email) {
-            return $email;
+        if (! isset($email)) {
+            return null;
         }
 
         return trim(mb_strtolower($email));

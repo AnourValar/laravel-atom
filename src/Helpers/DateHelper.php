@@ -9,11 +9,11 @@ class DateHelper
      *
      * @param mixed $date
      * @param mixed $time
-     * @param string $timezoneClient
      * @param string|null $default
+     * @param string|null $timezoneClient
      * @return string|null
      */
-    public function formatDate($date, mixed $time = true, string $timezoneClient = 'UTC', ?string $default = null): ?string
+    public function formatDate($date, mixed $time = true, ?string $default = null, ?string $timezoneClient = null): ?string
     {
         if (! $date) {
             return $default;
@@ -24,11 +24,7 @@ class DateHelper
         }
 
         if (! $date instanceof \Carbon\CarbonInterface) {
-            //try {
             $date = \Date::parse($date);
-            //} catch (\Carbon\Exceptions\InvalidFormatException $e) {
-            //    return $default;
-            //}
         }
 
         if ($time) {
@@ -40,6 +36,7 @@ class DateHelper
                 $date = $date->setTimeFrom($time->format('H:i:s'));
             }
 
+            $timezoneClient ??= config('atom.timezone_client');
             $date = $date->setTimezone($timezoneClient);
         }
 
@@ -50,24 +47,21 @@ class DateHelper
      * Formatting (for display) in user's timezone: date_time
      *
      * @param mixed $date
-     * @param string $timezoneClient
      * @param string|null $default
+     * @param string|null $timezoneClient
      * @return string|null
      */
-    public function formatDateTime($date, string $timezoneClient = 'UTC', ?string $default = null): ?string
+    public function formatDateTime($date, ?string $default = null, ?string $timezoneClient = null): ?string
     {
         if (! $date) {
             return $default;
         }
 
         if (! $date instanceof \Carbon\CarbonInterface) {
-            //try {
             $date = \Date::parse($date);
-            //} catch (\Carbon\Exceptions\InvalidFormatException $e) {
-            //    return $default;
-            //}
         }
 
+        $timezoneClient ??= config('atom.timezone_client');
         return $date->setTimezone($timezoneClient)->format(trans('laravel-atom::formats.datetime_format'));
     }
 
@@ -75,24 +69,21 @@ class DateHelper
      * Formatting (for display) in user's timezone: time
      *
      * @param mixed $date
-     * @param string $timezoneClient
      * @param string|null $default
+     * @param string|null $timezoneClient
      * @return string|null
      */
-    public function formatTime($date, string $timezoneClient = 'UTC', ?string $default = null): ?string
+    public function formatTime($date, ?string $default = null, ?string $timezoneClient = null): ?string
     {
         if (! $date) {
             return $default;
         }
 
         if (! $date instanceof \Carbon\CarbonInterface) {
-            //try {
             $date = \Date::parse($date);
-            //} catch (\Carbon\Exceptions\InvalidFormatException $e) {
-            //    return $default;
-            //}
         }
 
+        $timezoneClient ??= config('atom.timezone_client');
         return $date->setTimezone($timezoneClient)->format('H:i');
     }
 
@@ -100,27 +91,28 @@ class DateHelper
      * Formatting (for display) in user's timezone: relative date
      *
      * @param \Carbon\CarbonInterface $date
-     * @param string $timezoneClient
      * @param string|null $default
+     * @param string|null $timezoneClient
      * @return string|null
      */
     public function formatDateRelative(
         ?\Carbon\CarbonInterface $date,
-        string $timezoneClient = 'UTC',
-        ?string $default = null
+        ?string $default = null,
+        ?string $timezoneClient = null
     ): ?string {
         if (! $date) {
             return $default;
         }
 
+        $timezoneClient ??= config('atom.timezone_client');
         $sourceDate = $date->setTimezone($timezoneClient)->format('Y-m-d');
         $now = now($timezoneClient);
 
-        if ($sourceDate == $now->addDays(2)->format('Y-m-d')) {
+        if ($sourceDate == (clone $now)->addDays(2)->format('Y-m-d')) {
             return trans('laravel-atom::formats.human_date.after_tomorrow');
         }
 
-        if ($sourceDate == $now->addDays(1)->format('Y-m-d')) {
+        if ($sourceDate == (clone $now)->addDays(1)->format('Y-m-d')) {
             return trans('laravel-atom::formats.human_date.tomorrow');
         }
 
@@ -128,11 +120,11 @@ class DateHelper
             return trans('laravel-atom::formats.human_date.today');
         }
 
-        if ($sourceDate == $now->addDays(-1)->format('Y-m-d')) {
+        if ($sourceDate == (clone $now)->addDays(-1)->format('Y-m-d')) {
             return trans('laravel-atom::formats.human_date.yesterday');
         }
 
-        if ($sourceDate == $now->addDays(-2)->format('Y-m-d')) {
+        if ($sourceDate == (clone $now)->addDays(-2)->format('Y-m-d')) {
             return trans('laravel-atom::formats.human_date.before_yesterday');
         }
 
@@ -140,7 +132,7 @@ class DateHelper
             return trans('laravel-atom::formats.human_date.current_year.'.$date->format('m'), ['day' => $date->format('d')]);
         }
 
-        return $this->formatDate($date, true, $timezoneClient, $default);
+        return $this->formatDate($date, true, $default, $timezoneClient);
     }
 
     /**

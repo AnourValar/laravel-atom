@@ -7,6 +7,43 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
     /**
      * @return void
      */
+    public function test_canonizePhone()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertNull($helper->canonizePhone(null));
+        $this->assertEquals('79051230000', $helper->canonizePhone('7 905 123 00-00'));
+        $this->assertEquals('+79051230000', $helper->canonizePhone('7 905 123 00-00', true));
+        $this->assertEquals('79051230000', $helper->canonizePhone(' 8 905 123 00-00 ', false));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_formatPhone()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertNull($helper->formatPhone(null));
+        $this->assertEquals('+7(905) 123-4567', $helper->formatPhone('79051234567'));
+        $this->assertEquals('+123-456', $helper->formatPhone('123456'));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_canonizeEmail()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertNull($helper->canonizeEmail(null));
+        $this->assertEquals('foo@example.org', $helper->canonizeEmail('FOO@example.org'));
+        $this->assertEquals('foo@example.org', $helper->canonizeEmail('foo@example.org'));
+    }
+
+    /**
+     * @return void
+     */
     public function test_encrypt_decrypt()
     {
         $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();

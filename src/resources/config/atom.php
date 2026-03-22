@@ -20,4 +20,7 @@ return [
     'number' => [
         'multiple' => 100, // 10000000000
     ],
+
+    'timezone_client' => 'Etc/GMT-3', // might be dynamic
+    'fulltext_locale' => 'russian',
 ];
