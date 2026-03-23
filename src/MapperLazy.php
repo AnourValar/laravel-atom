@@ -100,4 +100,16 @@ class MapperLazy implements \Iterator, \Countable
             $this->handler = null;
         }
     }
+
+    /**
+     * Get full data
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $this->lazy();
+
+        return $this->data;
+    }
 }
