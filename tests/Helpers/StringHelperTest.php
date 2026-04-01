@@ -142,4 +142,30 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('Иванов В.', $helper->nameShort('Иванов', 'Василий', null));
         $this->assertSame('Иванов В.П.', $helper->nameShort('Иванов', 'Василий', 'Петрович'));
     }
+
+    /**
+     * @return void
+     */
+    public function test_normalizeUrl()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertNull($helper->normalizeUrl(null));
+        $this->assertSame('foobar', $helper->normalizeUrl('foobar'));
+
+        $this->assertSame('http://example.org', $helper->normalizeUrl('http://example.org?page=1'));
+        $this->assertSame('http://example.org', $helper->normalizeUrl('http://example.org?page=1&'));
+        $this->assertSame('http://example.org?foo=1', $helper->normalizeUrl('http://example.org?page=1&foo=1'));
+        $this->assertSame('http://example.org?foo=1&bar=2', $helper->normalizeUrl('http://example.org?page=1&foo=1&bar=2'));
+
+        $this->assertSame('http://example.org?page=2', $helper->normalizeUrl('http://example.org?page=2'));
+        $this->assertSame('http://example.org?page=2', $helper->normalizeUrl('http://example.org?page=2&'));
+        $this->assertSame('http://example.org?page=2&foo=1', $helper->normalizeUrl('http://example.org?page=2&foo=1'));
+        $this->assertSame('http://example.org?page=2&foo=1&bar=2', $helper->normalizeUrl('http://example.org?page=2&foo=1&bar=2'));
+
+        $this->assertSame('http://example.org?foo=1', $helper->normalizeUrl('http://example.org?foo=1&page=1'));
+        $this->assertSame('http://example.org?foo=1&bar=2', $helper->normalizeUrl('http://example.org?foo=1&page=1&bar=2'));
+
+        $this->assertSame([['http://example.org?foo=1', '@']], $helper->normalizeUrl([['http://example.org?foo=1&page=1', '@']]));
+    }
 }

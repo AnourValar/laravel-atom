@@ -260,4 +260,41 @@ class StringHelper
 
         return $result;
     }
+
+    /**
+     * Normalize & Clean up URL(s)
+     *
+     * @param mixed $data
+     * @param array $cleanParams
+     * @return mixed
+     */
+    public function normalizeUrl($data, array $cleanParams = ['page' => '1'])
+    {
+        if (is_string($data)) {
+            $parts = parse_url($data);
+            if (isset($parts['scheme'], $parts['host'], $parts['query'])) {
+                parse_str($parts['query'], $query);
+
+                foreach ($cleanParams as $param => $value) {
+                    if (($query[$param] ?? null) == $value) {
+                        unset($query[$param]);
+                    }
+                }
+
+                if ($query) {
+                    $data = sprintf('%s://%s?%s', $parts['scheme'], $parts['host'], http_build_query($query));
+                } else {
+                    $data = sprintf('%s://%s', $parts['scheme'], $parts['host']);
+                }
+            }
+        }
+
+        if (is_array($data)) {
+            foreach ($data as &$item) {
+                $item = $this->normalizeUrl($item, $cleanParams);
+            }
+        }
+
+        return $data;
+    }
 }
