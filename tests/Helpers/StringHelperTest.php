@@ -167,5 +167,8 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('http://example.org?foo=1&bar=2', $helper->normalizeUrl('http://example.org?foo=1&page=1&bar=2'));
 
         $this->assertSame([['http://example.org?foo=1', '@']], $helper->normalizeUrl([['http://example.org?foo=1&page=1', '@']]));
+
+        $this->assertSame('http://example.org/foo/bar', $helper->normalizeUrl('http://example.org/foo/bar?page=1'));
+        $this->assertSame('http://example.org/foo/bar?page=2', $helper->normalizeUrl('http://example.org/foo/bar?page=2'));
     }
 }

@@ -282,9 +282,9 @@ class StringHelper
                 }
 
                 if ($query) {
-                    $data = sprintf('%s://%s?%s', $parts['scheme'], $parts['host'], http_build_query($query));
+                    $data = sprintf('%s://%s%s?%s', $parts['scheme'], $parts['host'], $parts['path'] ?? '', http_build_query($query));
                 } else {
-                    $data = sprintf('%s://%s', $parts['scheme'], $parts['host']);
+                    $data = sprintf('%s://%s%s', $parts['scheme'], $parts['host'], $parts['path'] ?? '');
                 }
             }
         }
