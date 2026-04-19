@@ -363,7 +363,7 @@ class Service
      */
     public function normalizeKey($value, bool $encodeToJson = true, bool $nullTolerance = true)
     {
-        if (! $nullTolerance && $value === null && ! \App::isProduction()) {
+        if (! $nullTolerance && $value === null && ! in_array(config('app.env'), ['production', 'testing'])) {
             throw new \RuntimeException('Null lock.');
         }
 
