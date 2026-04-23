@@ -21,7 +21,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
      * Create an object from the input
      *
      * @param array|object $data
-     * @throws \RuntimeException
+     * @throws \RuntimeException|\TypeError
      * @return static
      */
     public static function from(array|object $data): static
@@ -52,7 +52,7 @@ abstract class Mapper implements \JsonSerializable, \ArrayAccess, Castable
                 if (stripos((string) $param->getType(), \AnourValar\LaravelAtom\Mapper\Optional::class) !== false) {
                     $value = new \AnourValar\LaravelAtom\Mapper\Optional();
                 } else {
-                    throw new \RuntimeException('Required parameter is missing: ' . $rule['name']);
+                    throw new \TypeError('Required parameter is missing: ' . $rule['name']);
                 }
             }
 
