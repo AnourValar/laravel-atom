@@ -38,7 +38,7 @@ trait EloquentCast
                     return null;
                 }
 
-                return json_encode(($this->class)::from($value)->toArray(), JSON_UNESCAPED_UNICODE);
+                return json_encode(($this->class)::from($value)->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION);
             }
 
             public function serialize(Model $model, string $key, mixed $value, array $attributes): array
