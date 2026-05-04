@@ -17,7 +17,8 @@ trait EloquentCast
     public static function castUsing(array $arguments): CastsAttributes
     {
         $class = static::class;
-        return new class ($class) implements CastsAttributes {
+        return new class ($class) implements CastsAttributes
+        {
             public function __construct(private string $class)
             {
                 //

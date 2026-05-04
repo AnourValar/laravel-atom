@@ -9,7 +9,8 @@ class RepositoryTest extends \PHPUnit\Framework\TestCase
      */
     public function test_toArray()
     {
-        $class = new class () extends \AnourValar\LaravelAtom\Repository {
+        $class = new class () extends \AnourValar\LaravelAtom\Repository
+        {
             public function toArray($data)
             {
                 return parent::toArray(...func_get_args());
@@ -50,7 +51,8 @@ class RepositoryTest extends \PHPUnit\Framework\TestCase
      */
     public function test_gap()
     {
-        $class = new class () extends \AnourValar\LaravelAtom\Repository {
+        $class = new class () extends \AnourValar\LaravelAtom\Repository
+        {
             public function gap(array $data, \Carbon\CarbonInterface $dateFrom, \Carbon\CarbonInterface $dateTo, array|callable $defaults, string $format = 'Y-m-d'): array
             {
                 return parent::gap(...func_get_args());
@@ -173,7 +175,8 @@ class RepositoryTest extends \PHPUnit\Framework\TestCase
      */
     public function test_conditions()
     {
-        $class = new class () extends \AnourValar\LaravelAtom\Repository {
+        $class = new class () extends \AnourValar\LaravelAtom\Repository
+        {
             public function proxy(): array
             {
                 return parent::conditions(...func_get_args());
