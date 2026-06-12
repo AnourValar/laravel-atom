@@ -23,6 +23,7 @@ parameters:
         - '#should be covariant with return type \(int\<0\, max\>\) of method Countable\:\:count\(\)#'
         - '#AnourValar\\HttpClient\\Response#'
         - '#Facades\\Redis#'
+        - '#Offset .name. does not exist on null#'
 
     excludePaths:
 

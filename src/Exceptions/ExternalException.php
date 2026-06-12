@@ -15,7 +15,6 @@ class ExternalException extends Exception
      * @param string $action
      * @param array|null|\AnourValar\HttpClient\Response $dump
      * @return void
-     * @psalm-suppress UndefinedClass
      */
     public function __construct(string $action, array|null|\AnourValar\HttpClient\Response $dump = null)
     {
