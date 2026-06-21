@@ -378,10 +378,6 @@ class Service
             $value = trim(mb_strtolower($value));
         }
 
-        if (is_integer($value) || is_double($value)) {
-            $value = (string) $value;
-        }
-
         if ($value === null) {
             $value = '';
         }
@@ -392,6 +388,10 @@ class Service
 
         if ($value === false) {
             $value = '0';
+        }
+
+        if (is_numeric($value)) {
+            $value = sprintf('%d', $value); // no round
         }
 
         if ($encodeToJson) {
