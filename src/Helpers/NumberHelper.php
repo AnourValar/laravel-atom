@@ -176,17 +176,17 @@ class NumberHelper
         $dec = (int) round(($amount - floor($amount)) * 100);
 
         $spelloutInt = \Lang::choice(
-            'laravel-atom::formats.spellout_int',
+            'laravel_atom::formats.spellout_int',
             $int,
             ['int' => (new \MessageFormatter(\App::getLocale(), '{n, spellout}'))->format(['n' => $int])]
         );
         $spelloutDec = \Lang::choice(
-            'laravel-atom::formats.spellout_dec',
+            'laravel_atom::formats.spellout_dec',
             $dec,
             ['dec' => str_pad((string) $dec, 2, '0', STR_PAD_LEFT)]
         );
 
-        $result = trans('laravel-atom::formats.spellout', ['spellout_int' => $spelloutInt, 'spellout_dec' => $spelloutDec]);
+        $result = trans('laravel_atom::formats.spellout', ['spellout_int' => $spelloutInt, 'spellout_dec' => $spelloutDec]);
         if ($ucfirst) {
             $result = \Str::ucfirst($result);
         }

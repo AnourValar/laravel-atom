@@ -40,7 +40,7 @@ class DateHelper
             $date = $date->setTimezone($timezoneClient);
         }
 
-        return $date->format(trans('laravel-atom::formats.date_format'));
+        return $date->format(trans('laravel_atom::formats.date_format'));
     }
 
     /**
@@ -62,7 +62,7 @@ class DateHelper
         }
 
         $timezoneClient ??= config('atom.timezone_client');
-        return $date->setTimezone($timezoneClient)->format(trans('laravel-atom::formats.datetime_format'));
+        return $date->setTimezone($timezoneClient)->format(trans('laravel_atom::formats.datetime_format'));
     }
 
     /**
@@ -109,27 +109,27 @@ class DateHelper
         $now = now($timezoneClient);
 
         if ($sourceDate == (clone $now)->addDays(2)->format('Y-m-d')) {
-            return trans('laravel-atom::formats.human_date.after_tomorrow');
+            return trans('laravel_atom::formats.human_date.after_tomorrow');
         }
 
         if ($sourceDate == (clone $now)->addDays(1)->format('Y-m-d')) {
-            return trans('laravel-atom::formats.human_date.tomorrow');
+            return trans('laravel_atom::formats.human_date.tomorrow');
         }
 
         if ($sourceDate == $now->format('Y-m-d')) {
-            return trans('laravel-atom::formats.human_date.today');
+            return trans('laravel_atom::formats.human_date.today');
         }
 
         if ($sourceDate == (clone $now)->addDays(-1)->format('Y-m-d')) {
-            return trans('laravel-atom::formats.human_date.yesterday');
+            return trans('laravel_atom::formats.human_date.yesterday');
         }
 
         if ($sourceDate == (clone $now)->addDays(-2)->format('Y-m-d')) {
-            return trans('laravel-atom::formats.human_date.before_yesterday');
+            return trans('laravel_atom::formats.human_date.before_yesterday');
         }
 
         if ($date->format('Y') == $now->format('Y')) {
-            return trans('laravel-atom::formats.human_date.current_year.'.$date->format('m'), ['day' => $date->format('d')]);
+            return trans('laravel_atom::formats.human_date.current_year.'.$date->format('m'), ['day' => $date->format('d')]);
         }
 
         return $this->formatDate($date, true, $default, $timezoneClient);

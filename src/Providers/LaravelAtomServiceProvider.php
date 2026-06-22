@@ -66,8 +66,8 @@ class LaravelAtomServiceProvider extends ServiceProvider
         $this->publishes([__DIR__.'/../resources/config/bindings.php' => config_path('bindings.php')], 'config');
 
         // langs
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravel-atom');
-        $this->publishes([__DIR__.'/../resources/lang/' => lang_path('vendor/laravel-atom')]);
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'laravel_atom');
+        $this->publishes([__DIR__.'/../resources/lang/' => lang_path('vendor/laravel_atom')]);
 
         // migrations
         //$this->loadMigrationsFrom(__DIR__.'/../database/migrations');
@@ -88,7 +88,7 @@ class LaravelAtomServiceProvider extends ServiceProvider
 
         // ThrottleRequestsException
         $exceptionHandler->renderable(function (\Illuminate\Http\Exceptions\ThrottleRequestsException $e, $request) {
-            $error = trans('laravel-atom::exception.throttle', ['seconds' => $e->getHeaders()['Retry-After']]);
+            $error = trans('laravel_atom::exception.throttle', ['seconds' => $e->getHeaders()['Retry-After']]);
 
             if ($request->expectsJson()) {
                 return response()->json(['message' => $e->getMessage(), 'errors' => ['error' => [$error]]], $e->getStatusCode());
