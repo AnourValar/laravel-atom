@@ -105,7 +105,7 @@ class StringHelper
     }
 
     /**
-     * Encrypt binary
+     * Encrypt binary (backend flow only - no MAC control)
      *
      * @param mixed $decryptedValue
      * @param string|null $key
@@ -138,7 +138,7 @@ class StringHelper
     }
 
     /**
-     * Decrypt binary
+     * Decrypt binary (backend flow only - no MAC control)
      *
      * @param string $encryptedData
      * @param string|null $key

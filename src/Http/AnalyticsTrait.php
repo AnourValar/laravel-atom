@@ -29,7 +29,7 @@ trait AnalyticsTrait
         // Validate
         $validator = \Validator::make(array_replace(['page' => 1, 'per_page' => 20], \Request::input(), $request), []);
         $handler->validate(\Request::user(), $validator);
-        $request = $validator->stopOnFirstFailure()->validate();
+        $request = $validator->stopOnFirstFailure()->validate(); // should receive auth user id if relevant
 
         // Authorize
         $handler->authorize(\Request::user(), $request);
