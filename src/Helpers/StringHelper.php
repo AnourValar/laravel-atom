@@ -201,7 +201,9 @@ class StringHelper
         return match (true) {
             $strlen < 3 => preg_replace('#^(.)#u', '*', $value[0]),
             $strlen < 6 => preg_replace('#(?<=.{1}).(?=.{1})#u', '*', $value[0]),
-            default => preg_replace('#(?<=.{2}).(?=.{2})#u', '*', $value[0]),
+            $strlen < 20 => preg_replace('#(?<=.{2}).(?=.{2})#u', '*', $value[0]),
+            $strlen < 30 => preg_replace('#(?<=.{4}).(?=.{4})#u', '*', $value[0]),
+            default => preg_replace('#(?<=.{5}).(?=.{5})#u', '*', $value[0]),
         } . $value[1];
     }
 

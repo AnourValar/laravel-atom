@@ -78,7 +78,7 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
     /**
      * @return void
      */
-    public function test_mask()
+    public function test_mask_1()
     {
         $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
 
@@ -108,6 +108,25 @@ class StringHelperTest extends \Orchestra\Testbench\TestCase
         $this->assertSame('fo****12@example.org', $helper->mask('foobar12@example.org', '@'));
         $this->assertSame('fo*****23@example.org', $helper->mask('foobar123@example.org', '@'));
     }
+
+    /**
+     * @return void
+     */
+    public function test_mask_2()
+    {
+        $helper = new \AnourValar\LaravelAtom\Helpers\StringHelper();
+
+        $this->assertSame('01***************90', $helper->mask('012345QWERTYUI67890'));
+
+        $this->assertSame('0123************7890', $helper->mask('012345QWERTYUIO67890'));
+        $this->assertSame('0123*************7890', $helper->mask('012345QWERTYUIOP67890'));
+        $this->assertSame('0123*********************7890', $helper->mask('012345QWERTYUIOPzxcvbnma67890'));
+
+        $this->assertSame('01234********************67890', $helper->mask('012345QWERTYUIOPzxcvbnmas67890'));
+        $this->assertSame('01234********************67890', $helper->mask('012345QWERTYUIOPzxcvbnmas67890'));
+        $this->assertSame('01234*********************67890', $helper->mask('012345QWERTYUIOPzxcvbnmasd67890'));
+    }
+
 
     /**
      * @return void
