@@ -103,4 +103,20 @@ trait PostgresTrait
             CREATE INDEX {$tableName}_{$columnName}_rum ON {$tableName} USING rum ({$columnName} rum_tsvector_ops);
         HERE);
     }
+
+    /**
+     * Atomic way to remove an item from the jsonb array.
+     *
+     * @param string $column
+     * @param int $item
+     * @return \Illuminate\Database\Query\Expression
+     */
+    protected function jsonbDiff(string $column, int $item): \Illuminate\Database\Query\Expression
+    {
+        return \DB::raw("(
+            SELECT jsonb_agg(elem)
+            FROM jsonb_array_elements({$column}::jsonb) AS elem
+            WHERE elem <> to_jsonb(" . $item . ")
+        )");
+    }
 }
